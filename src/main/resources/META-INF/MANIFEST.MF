@@ -1,1 +1,1 @@
-Main-Class: lesson1.task2052.Solution
+Main-Class: lesson1.task2056.Solution
