@@ -10,16 +10,16 @@ public class Solution {
 
         List<String> words = new ArrayList<>();
         while (scanner.hasNext()) {
-            words.add(scanner.next());
+            words.add(scanner.next().toLowerCase());
         }
 
         Map<String, Integer> map = new HashMap<>();
 
         for (String word : words) {
-            if (map.containsKey(word.toLowerCase())) {
-                map.put(word.toLowerCase(), map.get(word.toLowerCase()) + 1);
+            if (map.containsKey(word)) {
+                map.put(word, map.get(word) + 1);
             } else {
-                map.put(word.toLowerCase(), 1);
+                map.put(word, 1);
             }
         }
 
