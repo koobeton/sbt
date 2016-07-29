@@ -1,11 +1,12 @@
 package lesson1.task2037;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
 
-/**
- * Result - 33/35
- * */
 public class Solution {
+
+    private static List<String> words = new ArrayList<>();
 
     public static void main(String[] args) {
 
@@ -14,17 +15,25 @@ public class Solution {
         String text = scanner.next();
         int k = scanner.nextInt();
 
-        String[] words = text.split(",");
-
-        StringBuilder sb = new StringBuilder();
-
-        for (String word : words) {
-            if (word.length() >= k) {
-                if (sb.length() != 0) sb.append(",");
-                sb.append(word);
+        String word = "";
+        for (char c : text.toCharArray()) {
+            if (c == ',') {
+                append(word, k);
+                word = "";
+            } else {
+                word += Character.toString(c);
             }
         }
+        append(word, k);
 
-        System.out.println(sb);
+        for (String w : words) {
+            System.out.print(w);
+        }
+    }
+
+    private static void append(String word, int k) {
+        if (word.length() >= k) {
+            words.add(words.isEmpty() ? word : "," + word);
+        }
     }
 }
