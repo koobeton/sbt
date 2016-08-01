@@ -41,7 +41,7 @@ public class CountMapImpl<K> implements CountMap<K> {
     @Override
     public void addAll(CountMap<? extends K> source) {
         for (Map.Entry<? extends K, Integer> sourceEntry : source.toMap().entrySet()) {
-            this.add(sourceEntry.getKey(), sourceEntry.getValue());
+            add(sourceEntry.getKey(), sourceEntry.getValue());
         }
     }
 
@@ -54,6 +54,6 @@ public class CountMapImpl<K> implements CountMap<K> {
 
     @Override
     public void toMap(Map<? super K, Integer> destination) {
-        destination.putAll(this.map);
+        destination.putAll(map);
     }
 }
