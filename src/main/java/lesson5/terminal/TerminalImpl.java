@@ -50,14 +50,12 @@ public class TerminalImpl implements Terminal {
             throw new InvalidPinException(remainingPinAttempts);
         } else {
             lockAccount();
-            remainingPinAttempts = DEFAULT_PIN_ATTEMPTS;
         }
     }
 
     private void checkPinAccepted() {
         isAccountUnlocked();
-        if (!pinAccepted) throw new TerminalException("You must first enter the PIN " +
-                "(call the method enterPin(int pin)).");
+        if (!pinAccepted) throw new TerminalException("You must first enter the PIN.");
     }
 
     private boolean isAccountUnlocked() {
