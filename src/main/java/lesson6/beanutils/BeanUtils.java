@@ -1,5 +1,12 @@
 package lesson6.beanutils;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.util.Map;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
 public class BeanUtils {
     /**
      * Scans object "from" for all getters. If object "to"
@@ -19,5 +26,33 @@ public class BeanUtils {
      */
     public static void assign(Object to, Object from) {
 
+        Map<String, Method> gettersOfFrom = Stream.of(from.getClass().getMethods())
+                .filter(m -> m.getReturnType() != void.class)
+                .filter(m -> m.getName().startsWith("get"))
+                .filter(m -> m.getParameterCount() == 0)
+                .collect(Collectors.toMap(
+                        m -> m.getName().substring(3),
+                        Function.identity()));
+
+        Map<String, Method> settersOfTo = Stream.of(to.getClass().getMethods())
+                .filter(m -> m.getName().startsWith("set"))
+                .filter(m -> m.getParameterCount() == 1)
+                .collect(Collectors.toMap(
+                        m -> m.getName().substring(3),
+                        Function.identity()));
+
+        settersOfTo.forEach(
+                (methodName, setter) -> {
+                    Method getter = gettersOfFrom.get(methodName);
+                    if (getter != null
+                            && setter.getParameterTypes()[0].isAssignableFrom(getter.getReturnType())) {
+                        try {
+                            setter.invoke(to, getter.invoke(from));
+                        } catch (IllegalAccessException | InvocationTargetException e) {
+                            throw new RuntimeException("Exception during access to method "
+                                    + getter.getName(), e);
+                        }
+                    }
+                });
     }
 }

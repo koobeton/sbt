@@ -1,4 +1,4 @@
-package lesson6.classwork.testmodel;
+package lesson6.testmodel;
 
 public interface ValidConstantsInterface {
 

@@ -1,6 +1,6 @@
-package lesson6.classwork.testmodel;
+package lesson6.testmodel;
 
-public class ValidConstantsClass {
+public class InvalidConstantsClass {
 
     public static final String VALID_CONSTANT_1 = "VALID_CONSTANT_1";
     protected static final String INVALID_2 = "INVALID_2";
@@ -23,6 +23,10 @@ public class ValidConstantsClass {
     private String INVALID_16 = "INVALID_16";
 
     public static final int INVALID_CONSTANT_17 = 17;
+    public static final String INVALID_CONSTANT_18 = "invalidConstant18";
+    public static final String invalidConstant19 = "INVALID_CONSTANT_19";
+    public static final String INVALID_CONSTANT_20 = "invalid_constant_20";
+    public static final String invalid_constant_21 = "INVALID_CONSTANT_21";
 
     public static final String VALID_CONSTANT_22 = "VALID_CONSTANT_22";
 }

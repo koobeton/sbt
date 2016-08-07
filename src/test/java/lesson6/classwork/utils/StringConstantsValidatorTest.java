@@ -1,6 +1,6 @@
 package lesson6.classwork.utils;
 
-import lesson6.classwork.testmodel.*;
+import lesson6.testmodel.*;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
