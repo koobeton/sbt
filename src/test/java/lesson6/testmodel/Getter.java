@@ -13,6 +13,8 @@ public class Getter {
     public Number mismatchType;
     public String nonPublic;
 
+    public String simple;
+
     public static Integer getStaticInteger() {
         return staticInteger;
     }
@@ -43,5 +45,9 @@ public class Getter {
 
     protected String getNonPublic() {
         return nonPublic;
+    }
+
+    public String get() {
+        return simple;
     }
 }

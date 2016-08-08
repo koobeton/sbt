@@ -14,6 +14,8 @@ public class Setter {
     public String nonPublic;
     public String getterless;
 
+    public String simple;
+
     public static void setStaticInteger(Number staticInteger) {
         Setter.staticInteger = staticInteger;
     }
@@ -48,5 +50,9 @@ public class Setter {
 
     public void setGetterless(String getterless) {
         this.getterless = getterless;
+    }
+
+    public void set(String simple) {
+        this.simple = simple;
     }
 }

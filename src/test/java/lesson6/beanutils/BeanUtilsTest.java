@@ -30,6 +30,7 @@ public class BeanUtilsTest {
         getter.instanceObject = object2;
         getter.mismatchType = 100500;
         getter.nonPublic = "Non-public method";
+        getter.simple = "Just get() and set()";
     }
 
     @Test
@@ -46,5 +47,6 @@ public class BeanUtilsTest {
         assertNull(setter.mismatchType);
         assertNull(setter.nonPublic);
         assertNull(setter.getterless);
+        assertEquals("Just get() and set()", setter.simple);
     }
 }
