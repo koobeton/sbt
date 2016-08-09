@@ -1,1 +1,1 @@
-Main-Class: lesson6.classwork.utils.ReflectionUtils
+Main-Class: lesson7.classreloader.Main
