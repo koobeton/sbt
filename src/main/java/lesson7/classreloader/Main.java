@@ -6,8 +6,8 @@ import java.io.InputStreamReader;
 
 public class Main {
 
-    private static final String CLASS_NAME = "lesson7.classreloader.FlipFlop";
-    private static final String PATH_TO_CLASS_FILE = "./target/classes/lesson7/classreloader/FlipFlop.class";
+    private static final String CLASS_NAME = "lesson7.classreloader.Authorizer";
+    private static final String PATH_TO_CLASS_FILE = "./target/classes/lesson7/classreloader/Authorizer.class";
 
     private static final BufferedReader INPUT = new BufferedReader(new InputStreamReader(System.in));
 
@@ -16,33 +16,19 @@ public class Main {
             IllegalAccessException,
             InstantiationException {
 
-        ClassLoader parentClassLoader = ClassReloader.class.getClassLoader();
+        ClassReloaderBuilder builder = new ClassReloaderBuilder(CLASS_NAME, PATH_TO_CLASS_FILE);
 
-        ClassReloader reloader = new ClassReloader(parentClassLoader, CLASS_NAME, PATH_TO_CLASS_FILE);
-        Class clazz = reloader.loadClass(CLASS_NAME);
-
-        Reloadable object = (Reloadable) clazz.newInstance();
-        object.doSomething();
-
-        pause();
-
-        //create new class loader so classes can be reloaded.
-        reloader = new ClassReloader(parentClassLoader, CLASS_NAME, PATH_TO_CLASS_FILE);
-        clazz = reloader.loadClass(CLASS_NAME);
-
-        object = (Reloadable) clazz.newInstance();
-        object.doSomething();
-    }
-
-    private static void pause() {
         while (true) {
-            System.out.println("Enter 'r' for reloading class or 'q' for exit");
-            switch (readInput()) {
-                case "r":
-                    return;
-                case "q":
-                    System.exit(0);
-                    break;
+            System.out.println("Enter access code or 'exit' for exit");
+            String accessCode = readInput();
+            if (accessCode.equals("exit")) {
+                return;
+            } else {
+                //create new class loader so classes can be reloaded.
+                Reloadable object = (Reloadable) builder.newReloadedClassInstance();
+                System.out.println(object.check(accessCode)
+                        ? "+++ Access GRANTED +++"
+                        : "--- Access DENIED ---");
             }
         }
     }
