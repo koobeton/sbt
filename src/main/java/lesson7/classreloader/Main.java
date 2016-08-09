@@ -6,15 +6,41 @@ import java.io.InputStreamReader;
 
 public class Main {
 
+    private static final String CLASS_NAME = "lesson7.classreloader.FlipFlop";
+    private static final String PATH_TO_CLASS_FILE = "./target/classes/lesson7/classreloader/FlipFlop.class";
+
     private static final BufferedReader INPUT = new BufferedReader(new InputStreamReader(System.in));
 
-    public static void main(String... args) {
+    public static void main(String... args) throws
+            ClassNotFoundException,
+            IllegalAccessException,
+            InstantiationException {
 
+        ClassLoader parentClassLoader = ClassReloader.class.getClassLoader();
+
+        ClassReloader reloader = new ClassReloader(parentClassLoader, CLASS_NAME, PATH_TO_CLASS_FILE);
+        Class clazz = reloader.loadClass(CLASS_NAME);
+
+        Reloadable object = (Reloadable) clazz.newInstance();
+        object.doSomething();
+
+        pause();
+
+        //create new class loader so classes can be reloaded.
+        reloader = new ClassReloader(parentClassLoader, CLASS_NAME, PATH_TO_CLASS_FILE);
+        clazz = reloader.loadClass(CLASS_NAME);
+
+        object = (Reloadable) clazz.newInstance();
+        object.doSomething();
+    }
+
+    private static void pause() {
         while (true) {
-            System.out.println("Press any key to continue or enter exit or quit for exit");
+            System.out.println("Enter 'r' for reloading class or 'q' for exit");
             switch (readInput()) {
-                case "exit":
-                case "quit":
+                case "r":
+                    return;
+                case "q":
                     System.exit(0);
                     break;
             }
