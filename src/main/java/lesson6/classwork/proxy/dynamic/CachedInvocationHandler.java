@@ -24,7 +24,7 @@ public class CachedInvocationHandler implements InvocationHandler {
         );
     }
 
-    public CachedInvocationHandler(Object delegate) {
+    private CachedInvocationHandler(Object delegate) {
         this.delegate = delegate;
     }
 
@@ -38,6 +38,7 @@ public class CachedInvocationHandler implements InvocationHandler {
             resultByArg.put(key(method, args), result);
         }
 
+        //System.out.println("From cache of " + method.getName());
         return resultByArg.get(key(method, args));
     }
 
