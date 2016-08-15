@@ -10,9 +10,9 @@
     <packaging>pom</packaging>
 
     <modules>
-        <module>search</module>
         <module>profile</module>
         <module>photo</module>
+        <module>search</module>
         <module>chat</module>
         <module>gift</module>
         <module>recommendation</module>
