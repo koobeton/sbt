@@ -13,9 +13,6 @@
         <module>profile</module>
         <module>photo</module>
         <module>search</module>
-        <module>chat</module>
-        <module>gift</module>
-        <module>recommendation</module>
     </modules>
 
     <properties>
