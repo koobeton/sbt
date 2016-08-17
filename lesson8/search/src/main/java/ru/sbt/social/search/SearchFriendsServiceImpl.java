@@ -5,7 +5,6 @@ import ru.sbt.social.photo.domain.Photo;
 import ru.sbt.social.profile.domain.Profile;
 
 import java.util.*;
-import java.util.List;
 
 public class SearchFriendsServiceImpl implements SearchFriendsService {
 
@@ -32,9 +31,14 @@ public class SearchFriendsServiceImpl implements SearchFriendsService {
 
     @Override
     public List<Photo> getAllFriendsPhoto(Profile profile) {
-        List<Photo> allFriendsPhotos = new ArrayList<>();
+        /*List<Photo> allFriendsPhotos = new ArrayList<>();
         getFriends(profile)
                 .forEach(f -> allFriendsPhotos.addAll(photoService.getAllPhotos(f)));
-        return allFriendsPhotos;
+        return allFriendsPhotos;*/
+
+        return getFriends(profile)
+                .stream()
+                .map(photoService::getAllPhotos)
+                .collect(ArrayList::new, ArrayList::addAll, ArrayList::addAll);
     }
 }
