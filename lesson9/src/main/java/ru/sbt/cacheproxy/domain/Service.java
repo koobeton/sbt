@@ -1,6 +1,7 @@
 package ru.sbt.cacheproxy.domain;
 
 import ru.sbt.cacheproxy.proxy.annotation.Cache;
+import ru.sbt.cacheproxy.proxy.annotation.Ignore;
 
 import java.util.Date;
 import java.util.List;
@@ -20,4 +21,7 @@ public interface Service {
 
     @Cache(maxListSize = 10_000_000)
     List<String> bigLimitListSize(String item, double value, Date date);
+
+    @Cache
+    List<String> ignoreArgs(@Ignore String item, double value, @Ignore Date date);
 }

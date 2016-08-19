@@ -159,4 +159,32 @@ public class ServiceTest {
         assertTrue(result3.get(0).startsWith("Very big limit list size"));
         assertTrue(duration3 < 2000);
     }
+
+    @Test
+    public void ignoreArgs() throws Exception {
+
+        long start1 = System.currentTimeMillis();
+        List<String> result1 = service.ignoreArgs("First arg is ignored", 100, new Date(start1));
+        long duration1 = System.currentTimeMillis() - start1;
+
+        long start2 = System.currentTimeMillis();
+        List<String> result2 = service.ignoreArgs("Second arg is significant", 200, new Date(start2));
+        long duration2 = System.currentTimeMillis() - start2;
+
+        long start3 = System.currentTimeMillis();
+        List<String> result3 = service.ignoreArgs("Third arg is ignored", 100, new Date(start3));
+        long duration3 = System.currentTimeMillis() - start3;
+
+        assertEquals(1_000_000, result1.size());
+        assertTrue(result1.get(0).startsWith("First arg is ignored"));
+        assertTrue(duration1 > 2000);
+
+        assertEquals(1_000_000, result2.size());
+        assertTrue(result2.get(0).startsWith("Second arg is significant"));
+        assertTrue(duration2 > 2000);
+
+        assertEquals(1_000_000, result3.size());
+        assertTrue(result3.get(0).startsWith("First arg is ignored"));
+        assertTrue(duration3 < 2000);
+    }
 }
