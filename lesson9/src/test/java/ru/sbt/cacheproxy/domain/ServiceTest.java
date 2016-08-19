@@ -24,27 +24,27 @@ public class ServiceTest {
     public void uncached() throws Exception {
 
         long start1 = System.currentTimeMillis();
-        List<String> result1 = service.uncached("Test 1", 100, new Date(start1));
+        List<String> result1 = service.uncached("Uncached", 100, new Date(start1));
         long duration1 = System.currentTimeMillis() - start1;
 
         long start2 = System.currentTimeMillis();
-        List<String> result2 = service.uncached("Test 1", 200, new Date(start2));
+        List<String> result2 = service.uncached("Uncached", 200, new Date(start2));
         long duration2 = System.currentTimeMillis() - start2;
 
         long start3 = System.currentTimeMillis();
-        List<String> result3 = service.uncached("Test 1", 100, new Date(start1));
+        List<String> result3 = service.uncached("Uncached", 100, new Date(start1));
         long duration3 = System.currentTimeMillis() - start3;
 
         assertEquals(1_000_000, result1.size());
-        assertTrue(result1.get(0).startsWith("Test 1"));
+        assertTrue(result1.get(0).startsWith("Uncached"));
         assertTrue(duration1 > 2000);
 
         assertEquals(1_000_000, result2.size());
-        assertTrue(result2.get(0).startsWith("Test 1"));
+        assertTrue(result2.get(0).startsWith("Uncached"));
         assertTrue(duration2 > 2000);
 
         assertEquals(1_000_000, result3.size());
-        assertTrue(result3.get(0).startsWith("Test 1"));
+        assertTrue(result3.get(0).startsWith("Uncached"));
         assertTrue(duration3 > 2000);
     }
 
@@ -52,27 +52,27 @@ public class ServiceTest {
     public void cachedDefault() throws Exception {
 
         long start1 = System.currentTimeMillis();
-        List<String> result1 = service.cachedDefault("Test 2", 100, new Date(start1));
+        List<String> result1 = service.cachedDefault("Cached default", 100, new Date(start1));
         long duration1 = System.currentTimeMillis() - start1;
 
         long start2 = System.currentTimeMillis();
-        List<String> result2 = service.cachedDefault("Test 2", 200, new Date(start2));
+        List<String> result2 = service.cachedDefault("Cached default", 200, new Date(start2));
         long duration2 = System.currentTimeMillis() - start2;
 
         long start3 = System.currentTimeMillis();
-        List<String> result3 = service.cachedDefault("Test 2", 100, new Date(start1));
+        List<String> result3 = service.cachedDefault("Cached default", 100, new Date(start1));
         long duration3 = System.currentTimeMillis() - start3;
 
         assertEquals(1_000_000, result1.size());
-        assertTrue(result1.get(0).startsWith("Test 2"));
+        assertTrue(result1.get(0).startsWith("Cached default"));
         assertTrue(duration1 > 2000);
 
         assertEquals(1_000_000, result2.size());
-        assertTrue(result2.get(0).startsWith("Test 2"));
+        assertTrue(result2.get(0).startsWith("Cached default"));
         assertTrue(duration2 > 2000);
 
         assertEquals(1_000_000, result3.size());
-        assertTrue(result3.get(0).startsWith("Test 2"));
+        assertTrue(result3.get(0).startsWith("Cached default"));
         assertTrue(duration3 < 2000);
     }
 
@@ -101,6 +101,62 @@ public class ServiceTest {
 
         assertEquals(1_000_000, result3.size());
         assertTrue(result3.get(0).startsWith("0"));
+        assertTrue(duration3 < 2000);
+    }
+
+    @Test
+    public void limitedListSize() throws Exception {
+
+        long start1 = System.currentTimeMillis();
+        List<String> result1 = service.limitedListSize("Limited list size", 100, new Date(start1));
+        long duration1 = System.currentTimeMillis() - start1;
+
+        long start2 = System.currentTimeMillis();
+        List<String> result2 = service.limitedListSize("Limited list size", 200, new Date(start2));
+        long duration2 = System.currentTimeMillis() - start2;
+
+        long start3 = System.currentTimeMillis();
+        List<String> result3 = service.limitedListSize("Limited list size", 100, new Date(start1));
+        long duration3 = System.currentTimeMillis() - start3;
+
+        assertEquals(100_000, result1.size());
+        assertTrue(result1.get(0).startsWith("Limited list size"));
+        assertTrue(duration1 > 2000);
+
+        assertEquals(100_000, result2.size());
+        assertTrue(result2.get(0).startsWith("Limited list size"));
+        assertTrue(duration2 > 2000);
+
+        assertEquals(100_000, result3.size());
+        assertTrue(result3.get(0).startsWith("Limited list size"));
+        assertTrue(duration3 < 2000);
+    }
+
+    @Test
+    public void bigLimitListSize() throws Exception {
+
+        long start1 = System.currentTimeMillis();
+        List<String> result1 = service.bigLimitListSize("Very big limit list size", 100, new Date(start1));
+        long duration1 = System.currentTimeMillis() - start1;
+
+        long start2 = System.currentTimeMillis();
+        List<String> result2 = service.bigLimitListSize("Very big limit list size", 200, new Date(start2));
+        long duration2 = System.currentTimeMillis() - start2;
+
+        long start3 = System.currentTimeMillis();
+        List<String> result3 = service.bigLimitListSize("Very big limit list size", 100, new Date(start1));
+        long duration3 = System.currentTimeMillis() - start3;
+
+        assertEquals(1_000_000, result1.size());
+        assertTrue(result1.get(0).startsWith("Very big limit list size"));
+        assertTrue(duration1 > 2000);
+
+        assertEquals(1_000_000, result2.size());
+        assertTrue(result2.get(0).startsWith("Very big limit list size"));
+        assertTrue(duration2 > 2000);
+
+        assertEquals(1_000_000, result3.size());
+        assertTrue(result3.get(0).startsWith("Very big limit list size"));
         assertTrue(duration3 < 2000);
     }
 }

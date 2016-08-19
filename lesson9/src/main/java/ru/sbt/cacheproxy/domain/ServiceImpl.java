@@ -15,7 +15,7 @@ public class ServiceImpl implements Service {
                 .map(Object::toString)
                 .collect(Collectors.joining());
         try {
-            Thread.sleep(2000);
+            Thread.sleep(2500);
         } catch (InterruptedException e) {
             throw new RuntimeException("Delay was interrupted", e);
         }
@@ -35,5 +35,15 @@ public class ServiceImpl implements Service {
     @Override
     public List<String> cachedDefault() {
         return doHardWork("", 0, new Date());
+    }
+
+    @Override
+    public List<String> limitedListSize(String item, double value, Date date) {
+        return doHardWork(item, value, date);
+    }
+
+    @Override
+    public List<String> bigLimitListSize(String item, double value, Date date) {
+        return doHardWork(item, value, date);
     }
 }

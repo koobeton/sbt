@@ -14,4 +14,10 @@ public interface Service {
 
     @Cache
     List<String> cachedDefault();
+
+    @Cache(maxListSize = 100_000)
+    List<String> limitedListSize(String item, double value, Date date);
+
+    @Cache(maxListSize = 10_000_000)
+    List<String> bigLimitListSize(String item, double value, Date date);
 }
