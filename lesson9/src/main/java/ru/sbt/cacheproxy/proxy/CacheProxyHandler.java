@@ -27,6 +27,10 @@ public class CacheProxyHandler implements InvocationHandler {
 
         Cache.Type cacheType = annotation.cacheType();
         int maxListSize = annotation.maxListSize();
+        String fileNamePrefix = annotation.fileNamePrefix().equals(Cache.DEFAULT_FILE_NAME_PREFIX)
+                ? method.getName()
+                : annotation.fileNamePrefix();
+        boolean zip = annotation.zip();
 
         Object key = key(method, args);
         if (!resultByArgs.containsKey(key)) {
