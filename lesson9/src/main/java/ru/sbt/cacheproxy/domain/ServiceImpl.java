@@ -17,7 +17,7 @@ public class ServiceImpl implements Service {
         try {
             Thread.sleep(2000);
         } catch (InterruptedException e) {
-            throw new RuntimeException("Thread sleep was interrupted", e);
+            throw new RuntimeException("Delay was interrupted", e);
         }
         return Collections.nCopies(DEFAULT_LIST_SIZE, result);
     }
@@ -25,5 +25,15 @@ public class ServiceImpl implements Service {
     @Override
     public List<String> uncached(String item, double value, Date date) {
         return doHardWork(item, value, date);
+    }
+
+    @Override
+    public List<String> cachedDefault(String item, double value, Date date) {
+        return doHardWork(item, value, date);
+    }
+
+    @Override
+    public List<String> cachedDefault() {
+        return doHardWork("", 0, new Date());
     }
 }
