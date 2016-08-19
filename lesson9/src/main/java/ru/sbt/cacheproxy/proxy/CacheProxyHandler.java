@@ -31,37 +31,46 @@ public class CacheProxyHandler implements InvocationHandler {
         Object key = key(method, args);
         if (!resultByArgs.containsKey(key)) {
             Object result = method.invoke(delegate, args);
-            if (method.getReturnType() == List.class
-                    && maxListSize != Cache.UNLIMITED_LIST_SIZE
-                    && maxListSize <= ((List<?>) result).size()) {
-                result = ((List<?>) result).subList(0, maxListSize);
-            }
+            result = checkReturnType(result, method.getReturnType(), maxListSize);
             resultByArgs.put(key, result);
         }
         return resultByArgs.get(key);
     }
 
-    private Object key(Method method, Object[] args) {
+    private Object checkReturnType(final Object result, final Class<?> returnType, final int maxListSize) {
+        return returnType == List.class
+                && maxListSize != Cache.UNLIMITED_LIST_SIZE
+                && maxListSize <= ((List<?>) result).size()
+                ? ((List<?>) result).subList(0, maxListSize)
+                : result;
+    }
+
+    private Object key(final Method method, final Object[] args) {
         List<Object> key = new ArrayList<>();
         key.add(method);
         if (args != null) {
-            List<Object> significantArgs = new ArrayList<>();
-
-            Annotation[][] parameterAnnotations = method.getParameterAnnotations();
-            if (args.length != parameterAnnotations.length) {
-                throw new IllegalStateException("Wrong number of args");
-            }
-            for (int i = 0; i < args.length; i++) {
-                List<Class<? extends Annotation>> annotations = Arrays.stream(parameterAnnotations[i])
-                        .map(Annotation::annotationType)
-                        .collect(Collectors.toList());
-                if (!annotations.contains(Ignore.class)) {
-                    significantArgs.add(args[i]);
-                }
-            }
-
-            key.addAll(significantArgs);
+            key.addAll(checkSignificantArgs(method, args));
         }
         return key;
+    }
+
+    private List<Object> checkSignificantArgs(final Method method, final Object[] args) {
+
+        List<Object> significantArgs = new ArrayList<>();
+
+        Annotation[][] parameterAnnotations = method.getParameterAnnotations();
+        if (args.length != parameterAnnotations.length) {
+            throw new IllegalStateException("Wrong number of args");
+        }
+        for (int i = 0; i < args.length; i++) {
+            List<Class<? extends Annotation>> annotations = Arrays.stream(parameterAnnotations[i])
+                    .map(Annotation::annotationType)
+                    .collect(Collectors.toList());
+            if (!annotations.contains(Ignore.class)) {
+                significantArgs.add(args[i]);
+            }
+        }
+
+        return significantArgs;
     }
 }
