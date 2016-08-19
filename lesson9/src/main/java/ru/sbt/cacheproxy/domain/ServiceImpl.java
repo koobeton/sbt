@@ -51,4 +51,9 @@ public class ServiceImpl implements Service {
     public List<String> ignoreArgs(String item, double value, Date date) {
         return doHardWork(item, value, date);
     }
+
+    @Override
+    public List<String> inMemory(String item, double value, Date date) {
+        return doHardWork(item, value, date);
+    }
 }

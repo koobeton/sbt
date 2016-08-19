@@ -25,6 +25,7 @@ public class CacheProxyHandler implements InvocationHandler {
 
         Cache annotation = method.getAnnotation(Cache.class);
 
+        Cache.Type cacheType = annotation.cacheType();
         int maxListSize = annotation.maxListSize();
 
         Object key = key(method, args);

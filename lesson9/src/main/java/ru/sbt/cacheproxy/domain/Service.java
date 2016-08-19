@@ -6,6 +6,8 @@ import ru.sbt.cacheproxy.proxy.annotation.Ignore;
 import java.util.Date;
 import java.util.List;
 
+import static ru.sbt.cacheproxy.proxy.annotation.Cache.Type.*;
+
 public interface Service {
 
     List<String> uncached(String item, double value, Date date);
@@ -24,4 +26,7 @@ public interface Service {
 
     @Cache
     List<String> ignoreArgs(@Ignore String item, double value, @Ignore Date date);
+
+    @Cache(cacheType = IN_MEMORY)
+    List<String> inMemory(String item, double value, Date date);
 }

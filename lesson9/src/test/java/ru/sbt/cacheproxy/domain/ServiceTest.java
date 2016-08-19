@@ -187,4 +187,32 @@ public class ServiceTest {
         assertTrue(result3.get(0).startsWith("First arg is ignored"));
         assertTrue(duration3 < 2000);
     }
+
+    @Test
+    public void inMemory() throws Exception {
+
+        long start1 = System.currentTimeMillis();
+        List<String> result1 = service.inMemory("In memory", 100, new Date(start1));
+        long duration1 = System.currentTimeMillis() - start1;
+
+        long start2 = System.currentTimeMillis();
+        List<String> result2 = service.inMemory("In memory", 200, new Date(start2));
+        long duration2 = System.currentTimeMillis() - start2;
+
+        long start3 = System.currentTimeMillis();
+        List<String> result3 = service.inMemory("In memory", 100, new Date(start1));
+        long duration3 = System.currentTimeMillis() - start3;
+
+        assertEquals(1_000_000, result1.size());
+        assertTrue(result1.get(0).startsWith("In memory"));
+        assertTrue(duration1 > 2000);
+
+        assertEquals(1_000_000, result2.size());
+        assertTrue(result2.get(0).startsWith("In memory"));
+        assertTrue(duration2 > 2000);
+
+        assertEquals(1_000_000, result3.size());
+        assertTrue(result3.get(0).startsWith("In memory"));
+        assertTrue(duration3 < 2000);
+    }
 }
