@@ -1,5 +1,7 @@
 package ru.sbt.cacheproxy.domain;
 
+import ru.sbt.cacheproxy.proxy.annotation.Ignore;
+
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
@@ -59,6 +61,11 @@ public class ServiceImpl implements Service {
 
     @Override
     public List<String> defaultFile(String item, double value, Date date) {
+        return doHardWork(item, value, date);
+    }
+
+    @Override
+    public List<String> explicitFileName(String item, double value, Date date) {
         return doHardWork(item, value, date);
     }
 }

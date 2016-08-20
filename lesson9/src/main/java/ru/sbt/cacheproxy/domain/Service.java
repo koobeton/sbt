@@ -32,4 +32,7 @@ public interface Service {
 
     @Cache(cacheType = FILE)
     List<String> defaultFile(String item, double value, @Ignore Date date);
+
+    @Cache(cacheType = FILE, fileNamePrefix = "SBT")
+    List<String> explicitFileName(String item, double value, @Ignore Date date);
 }

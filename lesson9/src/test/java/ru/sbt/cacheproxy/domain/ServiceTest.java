@@ -234,4 +234,23 @@ public class ServiceTest {
         assertEquals(1_000_000, result3.size());
         assertEquals(result1.get(0), result3.get(0));
     }
+
+    @Test
+    public void explicitFileName() throws Exception {
+
+        List<String> result1 = service.explicitFileName("Explicit file name", 100, new Date());
+
+        List<String> result2 = service.explicitFileName("Explicit file name", 200, new Date());
+
+        List<String> result3 = service.explicitFileName("Explicit file name", 100, new Date());
+
+        assertEquals(1_000_000, result1.size());
+        assertTrue(result1.get(0).startsWith("Explicit file name100"));
+
+        assertEquals(1_000_000, result2.size());
+        assertTrue(result2.get(0).startsWith("Explicit file name200"));
+
+        assertEquals(1_000_000, result3.size());
+        assertEquals(result1.get(0), result3.get(0));
+    }
 }
