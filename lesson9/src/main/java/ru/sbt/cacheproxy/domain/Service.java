@@ -35,4 +35,7 @@ public interface Service {
 
     @Cache(cacheType = FILE, fileNamePrefix = "SBT")
     List<String> explicitFileName(String item, double value, @Ignore Date date);
+
+    @Cache(cacheType = FILE, zip = true)
+    List<String> zipFile(String item, double value, @Ignore Date date);
 }

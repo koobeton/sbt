@@ -253,4 +253,23 @@ public class ServiceTest {
         assertEquals(1_000_000, result3.size());
         assertEquals(result1.get(0), result3.get(0));
     }
+
+    @Test
+    public void zipFile() throws Exception {
+
+        List<String> result1 = service.zipFile("Zip file", 100, new Date());
+
+        List<String> result2 = service.zipFile("Zip file", 200, new Date());
+
+        List<String> result3 = service.zipFile("Zip file", 100, new Date());
+
+        assertEquals(1_000_000, result1.size());
+        assertTrue(result1.get(0).startsWith("Zip file"));
+
+        assertEquals(1_000_000, result2.size());
+        assertTrue(result2.get(0).startsWith("Zip file"));
+
+        assertEquals(1_000_000, result3.size());
+        assertEquals(result1.get(0), result3.get(0));
+    }
 }

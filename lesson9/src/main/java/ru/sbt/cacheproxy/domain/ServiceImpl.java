@@ -1,19 +1,17 @@
 package ru.sbt.cacheproxy.domain;
 
-import ru.sbt.cacheproxy.proxy.annotation.Ignore;
-
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class ServiceImpl implements Service {
 
     private static final int DEFAULT_LIST_SIZE = 1_000_000;
 
     private List<String> doHardWork(Object... objects) {
-        String result = Arrays.stream(objects)
+        String result = Stream.of(objects)
                 .map(Object::toString)
                 .collect(Collectors.joining());
         try {
@@ -66,6 +64,11 @@ public class ServiceImpl implements Service {
 
     @Override
     public List<String> explicitFileName(String item, double value, Date date) {
+        return doHardWork(item, value, date);
+    }
+
+    @Override
+    public List<String> zipFile(String item, double value, Date date) {
         return doHardWork(item, value, date);
     }
 }

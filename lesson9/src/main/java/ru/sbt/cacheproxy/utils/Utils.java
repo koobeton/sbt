@@ -1,6 +1,8 @@
 package ru.sbt.cacheproxy.utils;
 
 import java.io.*;
+import java.util.zip.GZIPInputStream;
+import java.util.zip.GZIPOutputStream;
 
 public class Utils {
 
@@ -27,8 +29,13 @@ public class Utils {
         }
     }
 
-    private static void serializeToZip(Serializable o, String zipFile) {
-
+    private static void serializeToZip(Serializable o, String zipFile) throws IOException {
+        try (ObjectOutputStream stream = new ObjectOutputStream(
+                new GZIPOutputStream(
+                        new BufferedOutputStream(
+                                new FileOutputStream(zipFile))))) {
+            stream.writeObject(o);
+        }
     }
 
     public static <T> T deserialize(String file, boolean zip) {
@@ -53,7 +60,13 @@ public class Utils {
         }
     }
 
-    private static <T> T deserializeFromZip(String zipFile) {
-        return null;
+    @SuppressWarnings("unchecked")
+    private static <T> T deserializeFromZip(String zipFile) throws IOException, ClassNotFoundException {
+        try (ObjectInputStream stream = new ObjectInputStream(
+                new GZIPInputStream(
+                        new BufferedInputStream(
+                                new FileInputStream(zipFile))))) {
+            return (T) stream.readObject();
+        }
     }
 }
