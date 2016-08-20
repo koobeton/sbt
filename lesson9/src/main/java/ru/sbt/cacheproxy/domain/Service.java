@@ -29,4 +29,7 @@ public interface Service {
 
     @Cache(cacheType = IN_MEMORY)
     List<String> inMemory(String item, double value, Date date);
+
+    @Cache(cacheType = FILE)
+    List<String> defaultFile(String item, double value, @Ignore Date date);
 }

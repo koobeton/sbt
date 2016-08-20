@@ -16,7 +16,7 @@ public class ServiceTest {
 
     @Before
     public void setUp() throws Exception {
-        cacheProxy = new CacheProxy("./");
+        cacheProxy = new CacheProxy("./src/test/resources/");
         service = cacheProxy.cache(new ServiceImpl());
     }
 
@@ -214,5 +214,24 @@ public class ServiceTest {
         assertEquals(1_000_000, result3.size());
         assertTrue(result3.get(0).startsWith("In memory"));
         assertTrue(duration3 < 2000);
+    }
+
+    @Test
+    public void defaultFile() throws Exception {
+
+        List<String> result1 = service.defaultFile("Default file", 100, new Date());
+
+        List<String> result2 = service.defaultFile("Default file", 200, new Date());
+
+        List<String> result3 = service.defaultFile("Default file", 100, new Date());
+
+        assertEquals(1_000_000, result1.size());
+        assertTrue(result1.get(0).startsWith("Default file100"));
+
+        assertEquals(1_000_000, result2.size());
+        assertTrue(result2.get(0).startsWith("Default file200"));
+
+        assertEquals(1_000_000, result3.size());
+        assertEquals(result1.get(0), result3.get(0));
     }
 }

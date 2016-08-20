@@ -15,6 +15,6 @@ public class CacheProxy {
 
         return (T) Proxy.newProxyInstance(delegate.getClass().getClassLoader(),
                 delegate.getClass().getInterfaces(),
-                new CacheProxyHandler(delegate));
+                new CacheProxyHandler(delegate, rootDir));
     }
 }

@@ -2,20 +2,24 @@ package ru.sbt.cacheproxy.proxy;
 
 import ru.sbt.cacheproxy.proxy.annotation.Cache;
 import ru.sbt.cacheproxy.proxy.annotation.Ignore;
+import ru.sbt.cacheproxy.utils.Utils;
 
+import java.io.Serializable;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.util.*;
-import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class CacheProxyHandler implements InvocationHandler {
 
-    private final Map<Object, Object> resultByArgs = new HashMap<>();
+    private final Map<String, Object> resultByArgs = new HashMap<>();
     private final Object delegate;
+    private final String rootDir;
 
-    public CacheProxyHandler(Object delegate) {
+    public CacheProxyHandler(Object delegate, String rootDir) {
         this.delegate = delegate;
+        this.rootDir = rootDir;
     }
 
     @Override
@@ -27,18 +31,20 @@ public class CacheProxyHandler implements InvocationHandler {
 
         Cache.Type cacheType = annotation.cacheType();
         int maxListSize = annotation.maxListSize();
-        String fileNamePrefix = annotation.fileNamePrefix().equals(Cache.DEFAULT_FILE_NAME_PREFIX)
-                ? method.getName()
-                : annotation.fileNamePrefix();
         boolean zip = annotation.zip();
+        String fileNameTemplate = rootDir + annotation.fileNamePrefix() + "%s" + (zip ? ".zip" : ".ser");
 
-        Object key = key(method, args);
+        String key = key(fileNameTemplate, method, args);
         if (!resultByArgs.containsKey(key)) {
             Object result = method.invoke(delegate, args);
             result = checkReturnType(result, method.getReturnType(), maxListSize);
             resultByArgs.put(key, result);
+            if (cacheType == Cache.Type.FILE) persistResult((Serializable) result, key, zip);
         }
-        return resultByArgs.get(key);
+
+        return cacheType == Cache.Type.FILE
+                ? restoreResult(key, zip)
+                : resultByArgs.get(key);
     }
 
     private Object checkReturnType(final Object result, final Class<?> returnType, final int maxListSize) {
@@ -49,32 +55,37 @@ public class CacheProxyHandler implements InvocationHandler {
                 : result;
     }
 
-    private Object key(final Method method, final Object[] args) {
-        List<Object> key = new ArrayList<>();
-        key.add(method);
-        if (args != null) {
-            key.addAll(checkSignificantArgs(method, args));
-        }
-        return key;
+    private String key(final String fileNameTemplate, final Method method, final Object[] args) {
+        return String.format(fileNameTemplate,
+                method.getName()
+                        + (args != null ? checkSignificantArgs(method, args) : ""));
     }
 
-    private List<Object> checkSignificantArgs(final Method method, final Object[] args) {
+    private String checkSignificantArgs(final Method method, final Object[] args) {
 
-        List<Object> significantArgs = new ArrayList<>();
+        StringBuilder significantArgs = new StringBuilder();
 
         Annotation[][] parameterAnnotations = method.getParameterAnnotations();
         if (args.length != parameterAnnotations.length) {
-            throw new IllegalStateException("Wrong number of args");
+            throw new IllegalStateException("Wrong args number in method: "
+                    + method.getName());
         }
         for (int i = 0; i < args.length; i++) {
-            List<Class<? extends Annotation>> annotations = Arrays.stream(parameterAnnotations[i])
+            if (Stream.of(parameterAnnotations[i])
                     .map(Annotation::annotationType)
-                    .collect(Collectors.toList());
-            if (!annotations.contains(Ignore.class)) {
-                significantArgs.add(args[i]);
+                    .noneMatch(a -> a == Ignore.class)) {
+                significantArgs.append(args[i]);
             }
         }
 
-        return significantArgs;
+        return significantArgs.toString();
+    }
+
+    private void persistResult(final Serializable result, final String fileName, final boolean zip) {
+        Utils.serialize(result, fileName, zip);
+    }
+
+    private Object restoreResult(final String fileName, final boolean zip) {
+        return Utils.deserialize(fileName, zip);
     }
 }
