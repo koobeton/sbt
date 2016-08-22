@@ -8,6 +8,7 @@ import java.io.Serializable;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -53,7 +54,7 @@ public class CacheProxyHandler implements InvocationHandler {
         return returnType == List.class
                 && maxListSize != Cache.UNLIMITED_LIST_SIZE
                 && maxListSize <= ((List<?>) result).size()
-                ? ((List<?>) result).subList(0, maxListSize)
+                ? new ArrayList<>(((List<?>) result).subList(0, maxListSize))
                 : result;
     }
 
