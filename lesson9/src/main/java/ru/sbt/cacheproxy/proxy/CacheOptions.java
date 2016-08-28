@@ -9,14 +9,14 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Stream;
 
-class CacheOptions {
+public class CacheOptions {
 
     private final Method method;
     private final Object[] args;
     private final Cache.Type cacheType;
     private final int maxListSize;
     private final boolean zip;
-    private final String fileNameTemplate;
+    private final String key;
 
     CacheOptions(Method method, Object[] args, String rootDir) {
         this.method = method;
@@ -31,18 +31,18 @@ class CacheOptions {
         this.cacheType = annotation.cacheType();
         this.maxListSize = annotation.maxListSize();
         this.zip = annotation.zip();
-        this.fileNameTemplate = rootDir + annotation.fileNamePrefix() + "%s" + (zip ? ".zip" : ".ser");
+        this.key = generateKey(rootDir + annotation.fileNamePrefix() + "%s" + (zip ? ".zip" : ".ser"));
     }
 
-    Cache.Type getCacheType() {
+    public Cache.Type getCacheType() {
         return cacheType;
     }
 
-    boolean isZip() {
+    public boolean isZip() {
         return zip;
     }
 
-    Object checkReturnType(final Object result) {
+    public Object checkReturnType(final Object result) {
         return method.getReturnType() == List.class
                 && maxListSize != Cache.UNLIMITED_LIST_SIZE
                 && maxListSize <= ((List<?>) result).size()
@@ -50,7 +50,11 @@ class CacheOptions {
                 : result;
     }
 
-    String key() {
+    public String key() {
+        return key;
+    }
+
+    private String generateKey(String fileNameTemplate) {
         return String.format(fileNameTemplate,
                 method.getName()
                         + (args != null ? getSignificantArgs() : ""));

@@ -1,23 +1,22 @@
 package ru.sbt.cacheproxy.proxy;
 
 import ru.sbt.cacheproxy.proxy.annotation.Cache;
-import ru.sbt.cacheproxy.utils.Utils;
+import ru.sbt.cacheproxy.proxy.persist.PersistStrategiesContext;
+import ru.sbt.cacheproxy.proxy.persist.PersistStrategy;
 
-import java.io.Serializable;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
-import java.util.HashMap;
-import java.util.Map;
 
 public class CacheProxyHandler implements InvocationHandler {
 
-    private final Map<String, Object> resultByArgs = new HashMap<>();
     private final Object delegate;
     private final String rootDir;
+    private final PersistStrategiesContext persistContext;
 
-    public CacheProxyHandler(Object delegate, String rootDir) {
+    public CacheProxyHandler(Object delegate, String rootDir, PersistStrategiesContext context) {
         this.delegate = delegate;
         this.rootDir = rootDir;
+        this.persistContext = context;
     }
 
     @Override
@@ -27,18 +26,14 @@ public class CacheProxyHandler implements InvocationHandler {
 
         CacheOptions options = new CacheOptions(method, args, rootDir);
 
-        String key = options.key();
-        if (!resultByArgs.containsKey(key)) {
+        PersistStrategy strategy = persistContext.getPersistStrategy(options.getCacheType());
+
+        if (!strategy.isCached(options.key())) {
             Object result = method.invoke(delegate, args);
             result = options.checkReturnType(result);
-            resultByArgs.put(key, result);
-            if (options.getCacheType() == Cache.Type.FILE) {
-                Utils.serialize((Serializable) result, key, options.isZip());
-            }
+            strategy.persist(result, options);
         }
 
-        return options.getCacheType() == Cache.Type.FILE
-                ? Utils.deserialize(key, options.isZip())
-                : resultByArgs.get(key);
+        return strategy.restore(options);
     }
 }

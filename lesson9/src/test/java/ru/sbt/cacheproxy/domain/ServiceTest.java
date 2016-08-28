@@ -1,22 +1,35 @@
 package ru.sbt.cacheproxy.domain;
 
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 import ru.sbt.cacheproxy.proxy.CacheProxy;
+import ru.sbt.cacheproxy.proxy.persist.FilePersistStrategy;
+import ru.sbt.cacheproxy.proxy.persist.InMemoryPersistStrategy;
+import ru.sbt.cacheproxy.proxy.persist.PersistStrategiesContext;
 
 import java.util.Date;
 import java.util.List;
 
 import static org.junit.Assert.*;
+import static ru.sbt.cacheproxy.proxy.annotation.Cache.Type.*;
 
 public class ServiceTest {
 
+    private PersistStrategiesContext context;
     private CacheProxy cacheProxy;
     private Service service;
 
+    @Rule
+    public ExpectedException thrown = ExpectedException.none();
+
     @Before
     public void setUp() throws Exception {
-        cacheProxy = new CacheProxy("./src/test/resources/");
+        context = new PersistStrategiesContext();
+        context.registerPersistStrategy(IN_MEMORY, new InMemoryPersistStrategy());
+        context.registerPersistStrategy(FILE, new FilePersistStrategy());
+        cacheProxy = new CacheProxy("./src/test/resources/", context);
         service = cacheProxy.cache(new ServiceImpl());
     }
 
@@ -271,5 +284,16 @@ public class ServiceTest {
 
         assertEquals(1_000_000, result3.size());
         assertEquals(result1.get(0), result3.get(0));
+    }
+
+    @Test
+    public void noPersistStrategy() throws Exception {
+
+        context.removePersistStrategy(IN_MEMORY);
+
+        thrown.expect(IllegalArgumentException.class);
+        thrown.expectMessage(IN_MEMORY.toString());
+
+        service.inMemory("No persist strategy", 100, new Date());
     }
 }
