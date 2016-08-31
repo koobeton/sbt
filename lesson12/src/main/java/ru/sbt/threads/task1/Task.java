@@ -6,8 +6,8 @@ public class Task<T> {
 
     private final Callable<? extends T> callable;
     private final Object lock = new Object();
-    private volatile TaskException exception;
-    private volatile T result;
+    private TaskException exception;
+    private T result;
     private volatile boolean calculated = false;
 
     public Task(Callable<? extends T> callable) {
