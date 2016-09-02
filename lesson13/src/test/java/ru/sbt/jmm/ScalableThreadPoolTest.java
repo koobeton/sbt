@@ -8,18 +8,26 @@ import java.util.function.Consumer;
 
 import static org.junit.Assert.*;
 
-public class FixedThreadPoolTest {
+public class ScalableThreadPoolTest {
 
     @Test
     public void taskTest() throws Exception {
 
-        int nThreads = 3;
+        int min = 3;
+        int max = 5;
 
-        ThreadPool pool = new FixedThreadPool(nThreads);
+        ThreadPool pool = new ScalableThreadPool(min, max);
 
         Map<Integer, String> integersByThread = new ConcurrentHashMap<>();
 
-        Consumer<Integer> task = (i) -> integersByThread.put(i, Thread.currentThread().getName());
+        Consumer<Integer> task = (i) -> {
+            try {
+                Thread.sleep(100);
+            } catch (InterruptedException e) {
+                throw new RuntimeException("Task sleep was interrupted: " + e.getMessage(), e);
+            }
+            integersByThread.put(i, Thread.currentThread().getName());
+        };
 
         pool.execute(() -> task.accept(1));
         pool.execute(() -> task.accept(2));
@@ -45,10 +53,11 @@ public class FixedThreadPoolTest {
         pool.execute(() -> task.accept(19));
         pool.execute(() -> task.accept(20));
 
-        Thread.sleep(1000);
+        Thread.sleep(2000);
 
         assertEquals(20, integersByThread.size());
         assertEquals(20, integersByThread.keySet().stream().distinct().count());
-        assertEquals(nThreads, integersByThread.values().stream().distinct().count());
+        long distinctThreads = integersByThread.values().stream().distinct().count();
+        assertTrue(distinctThreads >= min && distinctThreads <= max);
     }
 }
