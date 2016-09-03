@@ -32,17 +32,16 @@ public class FixedThreadPool implements ThreadPool {
         @Override
         public void run() {
             while (true) {
-                Runnable poll = null;
+                Runnable poll;
                 synchronized (tasks) {
-                    if (tasks.isEmpty()) {
+                    while (tasks.isEmpty()) {
                         try {
                             tasks.wait();
                         } catch (InterruptedException e) {
                             throw new RuntimeException("Interrupted exception: " + e.getMessage(), e);
                         }
-                    } else {
-                        poll = tasks.poll();
                     }
+                    poll = tasks.poll();
                 }
                 if (poll != null) poll.run(); // handle exception
             }

@@ -51,10 +51,12 @@ public class ScalableThreadPool implements ThreadPool {
                             currentThreadsCount.decrementAndGet();
                             return;
                         } else {
-                            try {
-                                tasks.wait();
-                            } catch (InterruptedException e) {
-                                throw new RuntimeException("Interrupted exception: " + e.getMessage(), e);
+                            while (tasks.isEmpty()) {
+                                try {
+                                    tasks.wait();
+                                } catch (InterruptedException e) {
+                                    throw new RuntimeException("Interrupted exception: " + e.getMessage(), e);
+                                }
                             }
                         }
                     } else {
