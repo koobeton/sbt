@@ -1,14 +1,17 @@
 package ru.sbt.threads.task1;
 
 import java.util.concurrent.Callable;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 public class Task<T> {
 
     private final Callable<? extends T> callable;
-    private final Object lock = new Object();
+    private final Lock lock = new ReentrantLock();
     private TaskException exception;
     private T result;
-    private volatile boolean calculated = false;
+    private AtomicBoolean calculated = new AtomicBoolean();
 
     public Task(Callable<? extends T> callable) {
         this.callable = callable;
@@ -16,15 +19,16 @@ public class Task<T> {
 
     public T get() {
 
-        if (calculated) return getResult();
+        if (calculated.get()) return getResult();
 
-        synchronized (lock) {
-            if (calculated) {
-                return getResult();
-            } else {
+        lock.lock();
+        try {
+            if (!calculated.get()) {
                 calculate();
-                return getResult();
             }
+            return getResult();
+        } finally {
+            lock.unlock();
         }
     }
 
@@ -34,7 +38,7 @@ public class Task<T> {
         } catch (Exception e) {
             exception = new TaskException("Task exception: " + e.getMessage(), e);
         } finally {
-            calculated = true;
+            calculated.set(true);
         }
     }
 
