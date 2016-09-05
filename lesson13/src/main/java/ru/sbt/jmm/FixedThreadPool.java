@@ -1,11 +1,11 @@
 package ru.sbt.jmm;
 
-import java.util.ArrayDeque;
-import java.util.Queue;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.LinkedBlockingQueue;
 
 public class FixedThreadPool implements ThreadPool {
 
-    private final Queue<Runnable> tasks = new ArrayDeque<>();
+    private final BlockingQueue<Runnable> tasks = new LinkedBlockingQueue<>();
     private final int threadCount;
 
     public FixedThreadPool(int threadCount) {
@@ -21,10 +21,10 @@ public class FixedThreadPool implements ThreadPool {
 
     @Override
     public void execute(Runnable runnable) {
-        synchronized (tasks) {
-            tasks.add(runnable);
-            //notify worker
-            tasks.notify();
+        try {
+            tasks.put(runnable);
+        } catch (InterruptedException e) {
+            throw new RuntimeException("Interrupted exception: " + e.getMessage(), e);
         }
     }
 
@@ -32,18 +32,11 @@ public class FixedThreadPool implements ThreadPool {
         @Override
         public void run() {
             while (true) {
-                Runnable poll;
-                synchronized (tasks) {
-                    while (tasks.isEmpty()) {
-                        try {
-                            tasks.wait();
-                        } catch (InterruptedException e) {
-                            throw new RuntimeException("Interrupted exception: " + e.getMessage(), e);
-                        }
-                    }
-                    poll = tasks.poll();
+                try {
+                    tasks.take().run();
+                } catch (InterruptedException e) {
+                    throw new RuntimeException("Interrupted exception: " + e.getMessage(), e);
                 }
-                if (poll != null) poll.run(); // handle exception
             }
         }
     }
