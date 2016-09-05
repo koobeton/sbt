@@ -1,6 +1,8 @@
 package ru.sbt.threads.task2;
 
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 public class ContextImpl implements Context {
 
@@ -9,6 +11,7 @@ public class ContextImpl implements Context {
     private final AtomicInteger completed;
     private final AtomicInteger failed;
     private final AtomicInteger interrupted;
+    private final Lock lock;
 
     public ContextImpl(ThreadPool pool, int totalTaskCount) {
         this.pool = pool;
@@ -16,6 +19,7 @@ public class ContextImpl implements Context {
         completed = new AtomicInteger();
         failed = new AtomicInteger();
         interrupted = new AtomicInteger();
+        lock = new ReentrantLock();
     }
 
     @Override
@@ -40,8 +44,11 @@ public class ContextImpl implements Context {
 
     @Override
     public boolean isFinished() {
-        synchronized (this) {
+        lock.lock();
+        try {
             return completed.get() + failed.get() + interrupted.get() == totalTaskCount;
+        } finally {
+            lock.unlock();
         }
     }
 
