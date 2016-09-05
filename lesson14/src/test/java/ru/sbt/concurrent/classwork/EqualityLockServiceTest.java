@@ -32,15 +32,17 @@ public class EqualityLockServiceTest {
     public void run() throws Exception {
 
         new Thread(() -> s.run(1)).start();
-        new Thread(() -> s.run(2)).start();
+        new Thread(() -> s.run(128)).start();
         new Thread(() -> s.run("fsdfs")).start();
 
-        new Thread(() -> s.run(2)).start();
-        new Thread(() -> s.run(2)).start();
+        new Thread(() -> s.run(128)).start();
+        new Thread(() -> s.run(128)).start();
 
-        Thread.sleep(2000);
+        new Thread(() -> s.run(3)).start();
 
-        assertEquals(5, executionQueue.size());
-        assertEquals(1, executionQueue.stream().skip(3).distinct().count());
+        Thread.sleep(2500);
+
+        assertEquals(6, executionQueue.size());
+        assertEquals(1, executionQueue.stream().skip(4).distinct().count());
     }
 }
