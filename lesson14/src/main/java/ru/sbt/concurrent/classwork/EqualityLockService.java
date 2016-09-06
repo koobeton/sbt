@@ -16,8 +16,8 @@ public class EqualityLockService implements Service {
     @Override
     public void run(final Object o) {
 
-        DoubleLock doubleLock = lockByObject.putIfAbsent(o, new DoubleLock());
-        if (doubleLock == null) doubleLock = lockByObject.get(o);
+        DoubleLock doubleLock;
+        while ((doubleLock = lockByObject.putIfAbsent(o, new DoubleLock())) == null) ;
 
         doubleLock.outerLock().lock();
         try {
