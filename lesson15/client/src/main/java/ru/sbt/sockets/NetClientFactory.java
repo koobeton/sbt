@@ -19,19 +19,4 @@ public class NetClientFactory {
                 new Class[]{interfaceClass},
                 new ClientInvocationHandler(host, port));
     }
-
-    public static void main(String[] args) {
-
-        NetClientFactory factory = new NetClientFactory("localhost", 5000);
-        Calculator client = factory.createClient(Calculator.class);
-
-        double calculate = client.calculate(1, 2);
-        System.out.println(calculate);
-
-        try {
-            client.throwMeException();
-        } catch (Exception e) {
-            System.out.println(e.getMessage());
-        }
-    }
 }
