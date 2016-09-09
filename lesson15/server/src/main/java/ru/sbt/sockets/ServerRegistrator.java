@@ -30,10 +30,12 @@ public class ServerRegistrator {
                  ObjectInputStream in = new ObjectInputStream(client.getInputStream());
                  ObjectOutputStream out = new ObjectOutputStream(client.getOutputStream())) {
 
-                out.writeObject(handleRequest(impl, in));
+                out.writeObject(handleRequest(in, impl));
                 out.flush();
             } catch (IOException e) {
-                throw new RuntimeException("I/O exception: " + e.getMessage(), e);
+                throw new RuntimeException("Internal server error: " +
+                        "Unable to send answer because I/O exception occurred: " +
+                        e.getMessage(), e);
             }
         }
     }
@@ -42,11 +44,12 @@ public class ServerRegistrator {
         try {
             return new ServerSocket(port);
         } catch (IOException e) {
-            throw new RuntimeException("Unable to create server socket: " + e.getMessage(), e);
+            throw new RuntimeException("Internal server error: " +
+                    "Unable to create server socket: " + e.getMessage(), e);
         }
     }
 
-    private static Object handleRequest(Object impl, ObjectInputStream in) {
+    private static Object handleRequest(ObjectInputStream in, Object impl) {
 
         Object result;
 
