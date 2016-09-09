@@ -11,4 +11,9 @@ public class CalculatorImpl implements Calculator {
     public void throwMeException() {
         throw new RuntimeException("Unable to calculate");
     }
+
+    @Override
+    public String getThreadName() {
+        return Thread.currentThread().getName();
+    }
 }

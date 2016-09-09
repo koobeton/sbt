@@ -5,6 +5,9 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
+import java.util.Queue;
+import java.util.concurrent.ConcurrentLinkedQueue;
+
 import static org.junit.Assert.*;
 
 public class CalculatorTest {
@@ -39,5 +42,21 @@ public class CalculatorTest {
         thrown.expectMessage("Unable to calculate");
 
         client.throwMeException();
+    }
+
+    @Test
+    public void getThreadName() throws Exception {
+
+        int nClients = 20;
+        Queue<String> results = new ConcurrentLinkedQueue<>();
+
+        for (int i = 0; i < nClients; i++) {
+            new Thread(() -> results.add(client.getThreadName())).start();
+        }
+
+        Thread.sleep(500);
+
+        assertEquals(nClients, results.size());
+        assertEquals(3, results.stream().distinct().count());
     }
 }
