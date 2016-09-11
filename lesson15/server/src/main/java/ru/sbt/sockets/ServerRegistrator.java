@@ -6,10 +6,8 @@ import java.io.ObjectOutputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
 
 /**
  * Client:
@@ -32,15 +30,12 @@ public class ServerRegistrator {
         ServerSocket serverSocket = createServerSocket(port);
 
         while (true) {
-            try (Socket client = serverSocket.accept();
-                 ObjectInputStream in = new ObjectInputStream(client.getInputStream());
-                 ObjectOutputStream out = new ObjectOutputStream(client.getOutputStream())) {
-
-                out.writeObject(executeTask(in, impl));
-                out.flush();
+            try {
+                Socket client = serverSocket.accept();
+                THREAD_POOL.submit(() -> handleClient(client, impl));
             } catch (IOException e) {
                 throw new RuntimeException("Internal server error: " +
-                        "Unable to send answer because I/O exception occurred: " +
+                        "Unable to accept connection because I/O exception occurred: " +
                         e.getMessage(), e);
             }
         }
@@ -55,20 +50,23 @@ public class ServerRegistrator {
         }
     }
 
-    private static Object executeTask(ObjectInputStream in, Object impl) {
+    private static void handleClient(Socket client, Object impl) {
 
-        Object result;
+        try (ObjectInputStream in = new ObjectInputStream(client.getInputStream());
+             ObjectOutputStream out = new ObjectOutputStream(client.getOutputStream())) {
 
-        Future<Object> task = THREAD_POOL.submit(() -> handleRequest(in, impl));
-        try {
-            result = task.get();
-        } catch (ExecutionException e) {
-            result = e.getCause();
-        } catch (InterruptedException e) {
-            result = e;
+            out.writeObject(handleRequest(in, impl));
+            out.flush();
+        } catch (IOException e) {
+            throw new RuntimeException("Internal server error: " +
+                    "Unable to send answer because I/O exception occurred: " +
+                    e.getMessage(), e);
+        } finally {
+            try {
+                client.close();
+            } catch (IOException ignore) {
+            }
         }
-
-        return result;
     }
 
     private static Object handleRequest(ObjectInputStream in, Object impl) {
