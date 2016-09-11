@@ -24,6 +24,7 @@ public class ClientInvocationHandler implements InvocationHandler {
              ObjectInputStream in = new ObjectInputStream(client.getInputStream())) {
 
             out.writeObject(method.getName());
+            out.writeObject(method.getParameterTypes());
             out.writeObject(args);
             out.flush();
 

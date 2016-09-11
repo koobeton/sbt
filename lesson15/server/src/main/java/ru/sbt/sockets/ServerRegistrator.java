@@ -77,14 +77,8 @@ public class ServerRegistrator {
 
         try {
             String methodName = (String) in.readObject();
+            Class<?>[] parameterTypes = (Class<?>[]) in.readObject();
             Object[] args = (Object[]) in.readObject();
-            Class<?>[] parameterTypes = null;
-            if (args != null) {
-                parameterTypes = new Class<?>[args.length];
-                for (int i = 0; i < args.length; i++) {
-                    parameterTypes[i] = args[i].getClass();
-                }
-            }
 
             result = impl.getClass()
                     .getMethod(methodName, parameterTypes)

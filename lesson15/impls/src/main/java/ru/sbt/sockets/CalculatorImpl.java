@@ -3,7 +3,7 @@ package ru.sbt.sockets;
 public class CalculatorImpl implements Calculator {
 
     @Override
-    public double calculate(Integer a, Integer b) {
+    public double calculate(int a, int b) {
         return a + b - 410 / 12;
     }
 
