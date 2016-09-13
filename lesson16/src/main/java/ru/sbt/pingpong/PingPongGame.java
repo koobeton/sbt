@@ -18,11 +18,14 @@ public class PingPongGame {
 
     private void startGame() {
         while (true) {
-            OUTER_LOCK.lock();
-            INNER_LOCK.lock();
-            OUTER_LOCK.unlock();
-            makeTurn();
-            INNER_LOCK.unlock();
+            try {
+                OUTER_LOCK.lock();
+                INNER_LOCK.lock();
+            } finally {
+                OUTER_LOCK.unlock();
+                makeTurn();
+                INNER_LOCK.unlock();
+            }
         }
     }
 
