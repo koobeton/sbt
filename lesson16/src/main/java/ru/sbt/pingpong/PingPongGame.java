@@ -24,7 +24,10 @@ public class PingPongGame {
             } finally {
                 OUTER_LOCK.unlock();
                 makeTurn();
-                INNER_LOCK.unlock();
+                try {
+                    INNER_LOCK.unlock();
+                } catch (IllegalMonitorStateException ignore) {
+                }
             }
         }
     }
