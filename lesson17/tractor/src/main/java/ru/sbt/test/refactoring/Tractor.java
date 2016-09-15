@@ -2,55 +2,36 @@ package ru.sbt.test.refactoring;
 
 public class Tractor {
 
-	int[] position = new int[] { 0, 0 };
-	int[] field = new int[] { 5, 5 };
-	Orientation orientation = Orientation.NORTH;
+    private static final String COMMAND_FORWARD = "F";
+    private static final String COMMAND_TURN_CLOCKWISE = "T";
 
-	public void move(String command) {
-        if (command == "F") {
-			moveForwards();
-		} else if (command == "T") {
-			turnClockwise();
-		}
-	}
+    private final Position position = new Position();
+    private final Field field = new Field(5, 5);
+    private Orientation orientation = Orientation.NORTH;
+
+    public void move(String command) {
+        if (COMMAND_FORWARD.equals(command)) moveForwards();
+        else if (COMMAND_TURN_CLOCKWISE.equals(command)) turnClockwise();
+    }
 
     public void moveForwards() {
-		if (orientation == Orientation.NORTH) {
-			position = new int[] { position[0], position[1] + 1 };
-		} else if (orientation == Orientation.EAST) {
-			position = new int[] { position[0] + 1, position[1] };
-		} else if (orientation == Orientation.SOUTH) {
-			position = new int[] { position[0], position[1] - 1 };
-		} else if (orientation == Orientation.WEST) {
-			position = new int[] { position[0] - 1, position[1] };
-		}
-		if (position[0] > field[0] || position[1] > field[1]) {
-			throw new TractorInDitchException();
-		}
-	}
+        orientation.moveForward(position);
+        if (!field.contains(position)) throw new TractorInDitchException();
+    }
 
     public void turnClockwise() {
-		if (orientation == Orientation.NORTH) {
-			orientation = Orientation.EAST;
-		} else if (orientation == Orientation.EAST) {
-			orientation = Orientation.SOUTH;
-		} else if (orientation == Orientation.SOUTH) {
-			orientation = Orientation.WEST;
-		} else if (orientation == Orientation.WEST) {
-			orientation = Orientation.NORTH;
-		}
-	}
+        orientation = orientation.turnClockwise();
+    }
 
-	public int getPositionX() {
-		return position[0];
-	}
+    public int getPositionX() {
+        return position.getX();
+    }
 
-	public int getPositionY() {
-		return position[1];
-	}
+    public int getPositionY() {
+        return position.getY();
+    }
 
-	public Orientation getOrientation() {
-		return orientation;
-	}
-
+    public Orientation getOrientation() {
+        return orientation;
+    }
 }
