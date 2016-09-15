@@ -11,6 +11,7 @@
 
     <modules>
         <module>solid-homework</module>
+        <module>tractor</module>
     </modules>
 
 </project>
