@@ -12,6 +12,7 @@ import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.mail.javamail.MimeMessageHelper;
+import ru.sbt.bit.ood.solid.homework.mail.MailService;
 
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
@@ -27,7 +28,7 @@ import java.time.LocalDate;
 import java.time.Month;
 
 @RunWith(PowerMockRunner.class)
-@PrepareForTest(SalaryHtmlReportNotifier.class)
+@PrepareForTest(MailService.class)
 public class TestSalaryHtmlReportNotifier {
 
     @Test
