@@ -36,7 +36,7 @@ public class TestSalaryHtmlReportNotifier {
         Connection someFakeConnection = mock(Connection.class);
         ResultSet mockResultSet = getMockedResultSet(someFakeConnection);
         when(mockResultSet.getString("emp_name")).thenReturn("John Doe", "Jane Dow");
-        when(mockResultSet.getDouble("salary")).thenReturn(100.0, 100.0, 50.0, 50.0);
+        when(mockResultSet.getDouble("salary")).thenReturn(100.0, 50.0);
         // mock mail related stuff
         MimeMessageHelper mockMimeMessageHelper = getMockedMimeMessageHelper();
 
