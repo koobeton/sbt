@@ -1,4 +1,4 @@
-package ru.sbt.test.refactoring;
+package ru.sbt.test.refactoring.location;
 
 public class Position {
 

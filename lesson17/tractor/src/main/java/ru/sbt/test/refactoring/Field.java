@@ -1,5 +1,7 @@
 package ru.sbt.test.refactoring;
 
+import ru.sbt.test.refactoring.location.Position;
+
 public class Field {
 
     private final int width;

@@ -1,26 +1,18 @@
 package ru.sbt.test.refactoring;
 
-public class Tractor {
+import ru.sbt.test.refactoring.command.Commands;
+import ru.sbt.test.refactoring.common.Unit;
+import ru.sbt.test.refactoring.location.Orientation;
+import ru.sbt.test.refactoring.location.Position;
 
-    private static final String COMMAND_FORWARD = "F";
-    private static final String COMMAND_TURN_CLOCKWISE = "T";
+public class Tractor implements Unit {
 
     private final Position position = new Position();
     private final Field field = new Field(5, 5);
     private Orientation orientation = Orientation.NORTH;
 
     public void move(String command) {
-        if (COMMAND_FORWARD.equals(command)) moveForwards();
-        else if (COMMAND_TURN_CLOCKWISE.equals(command)) turnClockwise();
-    }
-
-    public void moveForwards() {
-        orientation.moveForward(position);
-        if (!field.contains(position)) throw new TractorInDitchException();
-    }
-
-    public void turnClockwise() {
-        orientation = orientation.turnClockwise();
+        Commands.getCommand(command).execute(this, field);
     }
 
     public int getPositionX() {
@@ -31,7 +23,18 @@ public class Tractor {
         return position.getY();
     }
 
+    @Override
     public Orientation getOrientation() {
         return orientation;
+    }
+
+    @Override
+    public void setOrientation(Orientation orientation) {
+        this.orientation = orientation;
+    }
+
+    @Override
+    public Position getPosition() {
+        return position;
     }
 }
