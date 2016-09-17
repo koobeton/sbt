@@ -23,4 +23,29 @@ public class NewFunctionalityTractorTest {
         assertEquals(0, tractor.getPositionY());
         assertEquals(Orientation.NORTH, tractor.getOrientation());
     }
+
+    @Test
+    public void moveBackward() throws Exception {
+        tractor.move("F");
+        tractor.move("F");
+        tractor.move("T");
+        tractor.move("F");
+        tractor.move("F");
+        tractor.move("F");
+        tractor.move("F");
+        tractor.move("F");
+
+        assertEquals(5, tractor.getPositionX());
+        assertEquals(2, tractor.getPositionY());
+        assertEquals(Orientation.EAST, tractor.getOrientation());
+
+        tractor.move("B");
+        tractor.move("B");
+        tractor.move("B");
+        tractor.move("B");
+
+        assertEquals(1, tractor.getPositionX());
+        assertEquals(2, tractor.getPositionY());
+        assertEquals(Orientation.EAST, tractor.getOrientation());
+    }
 }
