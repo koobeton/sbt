@@ -48,4 +48,11 @@ public class NewFunctionalityTractorTest {
         assertEquals(2, tractor.getPositionY());
         assertEquals(Orientation.EAST, tractor.getOrientation());
     }
+
+    @Test
+    public void turnCounterClockwise() throws Exception {
+        tractor.move("TC");
+
+        assertEquals(Orientation.WEST, tractor.getOrientation());
+    }
 }
