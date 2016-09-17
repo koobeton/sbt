@@ -10,4 +10,11 @@ public class TurnClockwise implements Command {
     public void execute(Unit unit, Field field) {
         unit.setOrientation(unit.getOrientation().turnClockwise());
     }
+
+    @Override
+    public void undo(Unit unit) {
+        unit.setOrientation(unit.getOrientation().turnClockwise());
+        unit.setOrientation(unit.getOrientation().turnClockwise());
+        unit.setOrientation(unit.getOrientation().turnClockwise());
+    }
 }

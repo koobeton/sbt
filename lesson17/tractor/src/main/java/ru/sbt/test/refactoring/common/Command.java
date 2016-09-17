@@ -6,4 +6,7 @@ public interface Command {
 
     default void execute(Unit unit, Field field) {
     }
+
+    default void undo(Unit unit) {
+    }
 }

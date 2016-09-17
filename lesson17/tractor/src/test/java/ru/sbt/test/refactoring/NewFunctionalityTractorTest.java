@@ -25,24 +25,22 @@ public class NewFunctionalityTractorTest {
     }
 
     @Test
-    public void moveBackward() throws Exception {
+    public void undo() throws Exception {
         tractor.move("F");
         tractor.move("F");
         tractor.move("T");
         tractor.move("F");
         tractor.move("F");
-        tractor.move("F");
-        tractor.move("F");
-        tractor.move("F");
+        tractor.move("T");
+        tractor.move("T");
 
-        assertEquals(5, tractor.getPositionX());
+        assertEquals(2, tractor.getPositionX());
         assertEquals(2, tractor.getPositionY());
-        assertEquals(Orientation.EAST, tractor.getOrientation());
+        assertEquals(Orientation.WEST, tractor.getOrientation());
 
-        tractor.move("B");
-        tractor.move("B");
-        tractor.move("B");
-        tractor.move("B");
+        tractor.undo();
+        tractor.undo();
+        tractor.undo();
 
         assertEquals(1, tractor.getPositionX());
         assertEquals(2, tractor.getPositionY());
@@ -50,9 +48,27 @@ public class NewFunctionalityTractorTest {
     }
 
     @Test
-    public void turnCounterClockwise() throws Exception {
-        tractor.move("TC");
+    public void emptyCommandStack() throws Exception {
+        tractor.move("T");
+        tractor.move("F");
+        tractor.move("F");
+        tractor.move("T");
 
-        assertEquals(Orientation.WEST, tractor.getOrientation());
+        tractor.undo();
+        tractor.undo();
+        tractor.undo();
+        tractor.undo();
+        tractor.undo();
+        tractor.undo();
+        tractor.undo();
+        tractor.undo();
+        tractor.undo();
+        tractor.undo();
+        tractor.undo();
+        tractor.undo();
+
+        assertEquals(0, tractor.getPositionX());
+        assertEquals(0, tractor.getPositionY());
+        assertEquals(Orientation.NORTH, tractor.getOrientation());
     }
 }

@@ -12,4 +12,13 @@ public class MoveForward implements Command {
         unit.getOrientation().moveForward(unit.getPosition());
         if (!field.contains(unit.getPosition())) throw new TractorInDitchException();
     }
+
+    @Override
+    public void undo(Unit unit) {
+        unit.setOrientation(unit.getOrientation().turnClockwise());
+        unit.setOrientation(unit.getOrientation().turnClockwise());
+        unit.getOrientation().moveForward(unit.getPosition());
+        unit.setOrientation(unit.getOrientation().turnClockwise());
+        unit.setOrientation(unit.getOrientation().turnClockwise());
+    }
 }

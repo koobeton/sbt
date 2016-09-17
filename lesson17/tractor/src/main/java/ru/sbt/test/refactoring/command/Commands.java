@@ -13,9 +13,7 @@ public class Commands {
 
     static {
         setCommand("F", new MoveForward());
-        setCommand("B", new MoveBackward());
         setCommand("T", new TurnClockwise());
-        setCommand("TC", new TurnCounterClockwise());
     }
 
     public static void setCommand(String alias, Command command) {
