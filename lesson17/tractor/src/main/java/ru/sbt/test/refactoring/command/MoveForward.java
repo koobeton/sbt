@@ -15,10 +15,12 @@ public class MoveForward implements Command {
 
     @Override
     public void undo(Unit unit) {
-        unit.setOrientation(unit.getOrientation().turnClockwise());
-        unit.setOrientation(unit.getOrientation().turnClockwise());
+        unit.setOrientation(unit.getOrientation()
+                .turnClockwise()
+                .turnClockwise());
         unit.getOrientation().moveForward(unit.getPosition());
-        unit.setOrientation(unit.getOrientation().turnClockwise());
-        unit.setOrientation(unit.getOrientation().turnClockwise());
+        unit.setOrientation(unit.getOrientation()
+                .turnClockwise()
+                .turnClockwise());
     }
 }

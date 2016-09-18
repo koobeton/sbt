@@ -13,8 +13,9 @@ public class TurnClockwise implements Command {
 
     @Override
     public void undo(Unit unit) {
-        unit.setOrientation(unit.getOrientation().turnClockwise());
-        unit.setOrientation(unit.getOrientation().turnClockwise());
-        unit.setOrientation(unit.getOrientation().turnClockwise());
+        unit.setOrientation(unit.getOrientation()
+                .turnClockwise()
+                .turnClockwise()
+                .turnClockwise());
     }
 }
