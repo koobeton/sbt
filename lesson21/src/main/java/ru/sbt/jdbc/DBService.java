@@ -1,7 +1,5 @@
 package ru.sbt.jdbc;
 
-import ru.sbt.jdbc.dao.DAO;
-
 import java.sql.Connection;
 
 public interface DBService {
@@ -10,5 +8,5 @@ public interface DBService {
 
     void shutdown();
 
-    void createTables(DAO... tables);
+    void createTables();
 }

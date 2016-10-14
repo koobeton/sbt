@@ -1,12 +1,9 @@
 package ru.sbt.jdbc;
 
-import ru.sbt.jdbc.dao.DAO;
-
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.stream.Stream;
 
 public class DBServiceImpl implements DBService {
 
@@ -16,7 +13,7 @@ public class DBServiceImpl implements DBService {
         try {
             connection = DriverManager.getConnection(url);
         } catch (SQLException e) {
-            throw new RuntimeException("Can not create connection to database: " + e.getMessage(), e);
+            throw new RuntimeException("Can't create connection to database: " + e.getMessage(), e);
         }
     }
 
@@ -35,10 +32,7 @@ public class DBServiceImpl implements DBService {
     }
 
     @Override
-    public void createTables(DAO... tables) {
-        Stream.of(tables).forEach(DAO::createTable);
-
-        //TODO
+    public void createTables() {
         try (Statement stmt = connection.createStatement()) {
             stmt.executeUpdate("CREATE TABLE Students" +
                     "(" +
@@ -46,7 +40,8 @@ public class DBServiceImpl implements DBService {
                     "name varchar(255) not null," +
                     "surname varchar(255) not null," +
                     "primary key(id)" +
-                    ");");
+                    ");"
+            );
 
             stmt.executeUpdate("CREATE TABLE Lessons" +
                     "(" +
@@ -54,7 +49,8 @@ public class DBServiceImpl implements DBService {
                     "subject varchar(255) not null," +
                     "date bigint not null," +
                     "primary key(id)" +
-                    ");");
+                    ");"
+            );
 
             stmt.executeUpdate("CREATE TABLE Student_visits" +
                     "(" +
@@ -62,7 +58,8 @@ public class DBServiceImpl implements DBService {
                     "lesson_id bigint," +
                     "foreign key(student_id) references Students(id) on update cascade on delete cascade," +
                     "foreign key(lesson_id) references Lessons(id) on update cascade on delete cascade" +
-                    ");");
+                    ");"
+            );
         } catch (SQLException e) {
             throw new RuntimeException("Unable to create table: " + e.getMessage(), e);
         }

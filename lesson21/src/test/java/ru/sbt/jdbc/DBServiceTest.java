@@ -3,6 +3,8 @@ package ru.sbt.jdbc;
 import org.junit.*;
 
 import java.sql.Connection;
+import java.sql.DatabaseMetaData;
+import java.sql.ResultSet;
 
 import static org.junit.Assert.*;
 
@@ -11,24 +13,14 @@ public class DBServiceTest {
     private static final String URL = "jdbc:h2:mem:lesson21";
     private static DBService dbService;
 
-    @BeforeClass
-    public static void createDBService() {
-        dbService = new DBServiceImpl(URL);
-    }
-
-    @AfterClass
-    public static void shutdownDBService() {
-        dbService.shutdown();
-    }
-
     @Before
     public void setUp() throws Exception {
-
+        dbService = new DBServiceImpl(URL);
     }
 
     @After
     public void tearDown() throws Exception {
-
+        dbService.shutdown();
     }
 
     @Test
@@ -46,7 +38,28 @@ public class DBServiceTest {
 
         dbService.shutdown();
         assertTrue(dbService.getConnection().isClosed());
+    }
 
-        dbService = new DBServiceImpl(URL);
+    @Test
+    public void createTables() throws Exception {
+
+        dbService.createTables();
+
+        DatabaseMetaData metaData = dbService.getConnection().getMetaData();
+
+        ResultSet rs = metaData.getTables(null, null, "Students", null);
+        while (rs.next()) {
+            assertEquals("Students", rs.getString("TABLE_NAME"));
+        }
+
+        rs = metaData.getTables(null, null, "Lessons", null);
+        while (rs.next()) {
+            assertEquals("Lessons", rs.getString("TABLE_NAME"));
+        }
+
+        rs = metaData.getTables(null, null, "Student_visits", null);
+        while (rs.next()) {
+            assertEquals("Student_visits", rs.getString("TABLE_NAME"));
+        }
     }
 }
