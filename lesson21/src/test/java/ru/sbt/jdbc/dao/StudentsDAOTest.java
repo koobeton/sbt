@@ -95,4 +95,15 @@ public class StudentsDAOTest {
         assertEquals(2, result.size());
         result.forEach(s -> assertEquals("Иван", s.getName()));
     }
+
+    @Test
+    public void findStudentsBySurname() throws Exception {
+        studentsDAO.saveStudents(TEST_STUDENTS);
+        studentsDAO.saveStudent(new Student("Павел", "Иванов"));
+
+        List<Student> result = studentsDAO.findStudentsBySurname("Иванов");
+
+        assertEquals(2, result.size());
+        result.forEach(s -> assertEquals("Иванов", s.getSurname()));
+    }
 }
