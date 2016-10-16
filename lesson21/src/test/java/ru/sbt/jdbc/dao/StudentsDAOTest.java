@@ -78,10 +78,21 @@ public class StudentsDAOTest {
     public void findStudentById() throws Exception {
         studentsDAO.saveStudents(TEST_STUDENTS);
 
-        Student student = studentsDAO.findStudentById(1);
+        Student result = studentsDAO.findStudentById(1);
 
-        assertEquals(1, student.getId());
-        assertEquals("Вася", student.getName());
-        assertEquals("Пупкин", student.getSurname());
+        assertEquals(1, result.getId());
+        assertEquals("Вася", result.getName());
+        assertEquals("Пупкин", result.getSurname());
+    }
+
+    @Test
+    public void findStudentsByName() throws Exception {
+        studentsDAO.saveStudents(TEST_STUDENTS);
+        studentsDAO.saveStudent(new Student("Иван", "Второй"));
+
+        List<Student> result = studentsDAO.findStudentsByName("Иван");
+
+        assertEquals(2, result.size());
+        result.forEach(s -> assertEquals("Иван", s.getName()));
     }
 }

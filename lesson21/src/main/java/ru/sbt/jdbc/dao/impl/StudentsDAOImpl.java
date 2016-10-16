@@ -66,7 +66,12 @@ public class StudentsDAOImpl implements StudentsDAO {
 
     @Override
     public List<Student> findStudentsByName(String name) {
-        return null;
+        String sql = "select * from Students where name = ?";
+        try {
+            return executeQuery(connection, sql, pstmt -> pstmt.setString(1, name), getResultHandler());
+        } catch (SQLException e) {
+            throw new RuntimeException("Unable to find students by name: " + e.getMessage(), e);
+        }
     }
 
     @Override
