@@ -67,7 +67,10 @@ public class StudentsDAOTest {
 
     @Test
     public void listStudents() throws Exception {
+        studentsDAO.saveStudents(TEST_STUDENTS);
 
+        List<Student> result = studentsDAO.listStudents();
 
+        assertEquals(TEST_STUDENTS.size(), result.size());
     }
 }

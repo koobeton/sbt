@@ -15,27 +15,27 @@ public class Executor {
         }
     }
 
-    public static void executeQuery(
+    public static <R> R executeQuery(
             Connection connection,
             String sql,
-            ThrowableConsumer<ResultSet, SQLException> resultHandler)
+            ThrowableFunction<ResultSet, R, SQLException> resultHandler)
             throws SQLException {
         try (Statement stmt = connection.createStatement()) {
             ResultSet rs = stmt.executeQuery(sql);
-            resultHandler.accept(rs);
+            return resultHandler.apply(rs);
         }
     }
 
-    public static void executeQuery(
+    public static <R> R executeQuery(
             Connection connection,
             String sql,
             ThrowableConsumer<PreparedStatement, SQLException> parameterSetter,
-            ThrowableConsumer<ResultSet, SQLException> resultHandler)
+            ThrowableFunction<ResultSet, R, SQLException> resultHandler)
             throws SQLException {
         try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
             parameterSetter.accept(pstmt);
             ResultSet rs = pstmt.executeQuery();
-            resultHandler.accept(rs);
+            return resultHandler.apply(rs);
         }
     }
 }

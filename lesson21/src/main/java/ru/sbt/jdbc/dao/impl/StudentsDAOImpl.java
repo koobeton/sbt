@@ -3,7 +3,7 @@ package ru.sbt.jdbc.dao.impl;
 import ru.sbt.jdbc.dao.StudentsDAO;
 import ru.sbt.jdbc.dataset.Student;
 import ru.sbt.jdbc.util.Executor;
-import ru.sbt.jdbc.util.ThrowableConsumer;
+import ru.sbt.jdbc.util.ThrowableFunction;
 
 import java.sql.Connection;
 import java.sql.ResultSet;
@@ -44,20 +44,11 @@ public class StudentsDAOImpl implements StudentsDAO {
     @Override
     public List<Student> listStudents() {
         String sql = "select * from Students";
-        List<Student> students = new ArrayList<>();
         try {
-            Executor.executeQuery(connection, sql, rs -> {
-                while (rs.next()) {
-                    long id = rs.getLong("id");
-                    String name = rs.getString("name");
-                    String surname = rs.getString("surname");
-                    students.add(new Student(id, name, surname));
-                }
-            });
+            return Executor.executeQuery(connection, sql, getResultHandler());
         } catch (SQLException e) {
             throw new RuntimeException("Unable to get students list: " + e.getMessage(), e);
         }
-        return students;
     }
 
     @Override
@@ -88,5 +79,18 @@ public class StudentsDAOImpl implements StudentsDAO {
     @Override
     public void deleteStudent(long id) {
 
+    }
+
+    private ThrowableFunction<ResultSet, List<Student>, SQLException> getResultHandler() {
+        return rs -> {
+            List<Student> students = new ArrayList<>();
+            while (rs.next()) {
+                long id = rs.getLong("id");
+                String name = rs.getString("name");
+                String surname = rs.getString("surname");
+                students.add(new Student(id, name, surname));
+            }
+            return students;
+        };
     }
 }
