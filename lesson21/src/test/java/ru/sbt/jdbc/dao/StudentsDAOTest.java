@@ -16,6 +16,8 @@ import static org.junit.Assert.*;
 public class StudentsDAOTest {
 
     private static final String URL = "jdbc:h2:mem:lesson21";
+    private static final String NAME = "Вася";
+    private static final String SURNAME = "Пупкин";
 
     private DBService dbService;
     private StudentsDAO studentsDAO;
@@ -34,13 +36,13 @@ public class StudentsDAOTest {
 
     @Test
     public void saveStudent() throws Exception {
-        studentsDAO.saveStudent(new Student(100500, "Вася", "Пупкин"));
+        studentsDAO.saveStudent(new Student(NAME, SURNAME));
 
         try (Statement stmt = dbService.getConnection().createStatement()) {
             ResultSet rs = stmt.executeQuery("select * from Students where name like 'Вася' and surname like 'Пупкин'");
             while (rs.next()) {
-                assertEquals("Вася", rs.getString("name"));
-                assertEquals("Пупкин", rs.getString("surname"));
+                assertEquals(NAME, rs.getString("name"));
+                assertEquals(SURNAME, rs.getString("surname"));
             }
         }
     }
