@@ -99,7 +99,19 @@ public class StudentsDAOImpl implements StudentsDAO {
 
     @Override
     public void updateStudent(Student student) {
-
+        if (student.getId() == Student.UNDEFINED_ID)
+            throw new IllegalArgumentException("Unable to update student with undefined id, try to save it first");
+        String sql = "update Students set name = ?, surname = ? where id = ?";
+        try {
+            executeBatchUpdate(connection, sql, pstmt -> {
+                pstmt.setLong(3, student.getId());
+                pstmt.setString(1, student.getName());
+                pstmt.setString(2, student.getSurname());
+                pstmt.addBatch();
+            });
+        } catch (SQLException e) {
+            throw new RuntimeException("Unable update student: " + e.getMessage(), e);
+        }
     }
 
     @Override

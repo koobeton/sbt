@@ -2,7 +2,9 @@ package ru.sbt.jdbc.dao;
 
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 import ru.sbt.jdbc.DBService;
 import ru.sbt.jdbc.DBServiceImpl;
 import ru.sbt.jdbc.dao.impl.StudentsDAOImpl;
@@ -27,6 +29,9 @@ public class StudentsDAOTest {
 
     private DBService dbService;
     private StudentsDAO studentsDAO;
+
+    @Rule
+    public ExpectedException thrown = ExpectedException.none();
 
     @Before
     public void setUp() throws Exception {
@@ -116,5 +121,29 @@ public class StudentsDAOTest {
         assertEquals(1, result.size());
         assertEquals("Вася", result.get(0).getName());
         assertEquals("Пупкин", result.get(0).getSurname());
+    }
+
+    @Test
+    public void updateStudent() throws Exception {
+        studentsDAO.saveStudents(TEST_STUDENTS);
+        long id = 1;
+        Student before = studentsDAO.findStudentById(id);
+
+        studentsDAO.updateStudent(new Student(id, "Анна", "Семенович"));
+        Student after = studentsDAO.findStudentById(id);
+
+        assertEquals(before.getId(), after.getId());
+        assertNotEquals(before.getName(), after.getName());
+        assertNotEquals(before.getSurname(), after.getSurname());
+        assertEquals("Анна", after.getName());
+        assertEquals("Семенович", after.getSurname());
+    }
+
+    @Test
+    public void updateStudentWithUndefinedId() throws Exception {
+        thrown.expect(IllegalArgumentException.class);
+        thrown.expectMessage("Unable to update student with undefined id, try to save it first");
+
+        studentsDAO.updateStudent(new Student("Nameless", "One"));
     }
 }
