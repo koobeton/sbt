@@ -80,13 +80,21 @@ public class StudentsDAOImpl implements StudentsDAO {
         try {
             return executeQuery(connection, sql, pstmt -> pstmt.setString(1, surname), getResultHandler());
         } catch (SQLException e) {
-            throw new RuntimeException("Unable to find students by name: " + e.getMessage(), e);
+            throw new RuntimeException("Unable to find students by surname: " + e.getMessage(), e);
         }
     }
 
     @Override
     public List<Student> findStudentsByNameAndSurname(String name, String surname) {
-        return null;
+        String sql = "select * from Students where name = ? and surname = ?";
+        try {
+            return executeQuery(connection, sql, pstmt -> {
+                pstmt.setString(1, name);
+                pstmt.setString(2, surname);
+            }, getResultHandler());
+        } catch (SQLException e) {
+            throw new RuntimeException("Unable to find students by name and surname: " + e.getMessage(), e);
+        }
     }
 
     @Override
