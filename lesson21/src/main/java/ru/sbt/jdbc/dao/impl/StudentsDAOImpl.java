@@ -2,7 +2,6 @@ package ru.sbt.jdbc.dao.impl;
 
 import ru.sbt.jdbc.dao.StudentsDAO;
 import ru.sbt.jdbc.dataset.Student;
-import ru.sbt.jdbc.util.Executor;
 import ru.sbt.jdbc.util.ThrowableFunction;
 
 import java.sql.Connection;
@@ -11,6 +10,10 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+
+import static ru.sbt.jdbc.util.Executor.executeBatchUpdate;
+import static ru.sbt.jdbc.util.Executor.executeQuery;
+import static ru.sbt.jdbc.util.Selector.selectOne;
 
 public class StudentsDAOImpl implements StudentsDAO {
 
@@ -29,7 +32,7 @@ public class StudentsDAOImpl implements StudentsDAO {
     public void saveStudents(List<Student> students) {
         String sql = "insert into Students(name, surname) values(?, ?)";
         try {
-            Executor.executeBatchUpdate(connection, sql, pstmt -> {
+            executeBatchUpdate(connection, sql, pstmt -> {
                 for (Student student : students) {
                     pstmt.setString(1, student.getName());
                     pstmt.setString(2, student.getSurname());
@@ -45,7 +48,7 @@ public class StudentsDAOImpl implements StudentsDAO {
     public List<Student> listStudents() {
         String sql = "select * from Students";
         try {
-            return Executor.executeQuery(connection, sql, getResultHandler());
+            return executeQuery(connection, sql, getResultHandler());
         } catch (SQLException e) {
             throw new RuntimeException("Unable to get students list: " + e.getMessage(), e);
         }
@@ -53,7 +56,12 @@ public class StudentsDAOImpl implements StudentsDAO {
 
     @Override
     public Student findStudentById(long id) {
-        return null;
+        String sql = "select * from Students where id = ?";
+        try {
+            return selectOne(executeQuery(connection, sql, pstmt -> pstmt.setLong(1, id), getResultHandler()));
+        } catch (SQLException e) {
+            throw new RuntimeException("Unable to find student by id: " + e.getMessage(), e);
+        }
     }
 
     @Override

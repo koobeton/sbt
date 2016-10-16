@@ -73,4 +73,15 @@ public class StudentsDAOTest {
 
         assertEquals(TEST_STUDENTS.size(), result.size());
     }
+
+    @Test
+    public void findStudentById() throws Exception {
+        studentsDAO.saveStudents(TEST_STUDENTS);
+
+        Student student = studentsDAO.findStudentById(1);
+
+        assertEquals(1, student.getId());
+        assertEquals("Вася", student.getName());
+        assertEquals("Пупкин", student.getSurname());
+    }
 }
