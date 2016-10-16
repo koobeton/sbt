@@ -110,13 +110,21 @@ public class StudentsDAOImpl implements StudentsDAO {
                 pstmt.addBatch();
             });
         } catch (SQLException e) {
-            throw new RuntimeException("Unable update student: " + e.getMessage(), e);
+            throw new RuntimeException("Unable to update student: " + e.getMessage(), e);
         }
     }
 
     @Override
     public void deleteStudent(long id) {
-
+        String sql = "delete from Students where id = ?";
+        try {
+            executeBatchUpdate(connection, sql, pstmt -> {
+                pstmt.setLong(1, id);
+                pstmt.addBatch();
+            });
+        } catch (SQLException e) {
+            throw new RuntimeException("Unable to delete student: " + e.getMessage(), e);
+        }
     }
 
     private ThrowableFunction<ResultSet, List<Student>, SQLException> getResultHandler() {

@@ -146,4 +146,15 @@ public class StudentsDAOTest {
 
         studentsDAO.updateStudent(new Student("Nameless", "One"));
     }
+
+    @Test
+    public void deleteStudent() throws Exception {
+        studentsDAO.saveStudents(TEST_STUDENTS);
+        long id = 1;
+
+        studentsDAO.deleteStudent(id);
+
+        assertEquals(TEST_STUDENTS.size() - 1, studentsDAO.listStudents().size());
+        assertNull(studentsDAO.findStudentById(id));
+    }
 }
