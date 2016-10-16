@@ -10,14 +10,20 @@ import ru.sbt.jdbc.dataset.Student;
 
 import java.sql.ResultSet;
 import java.sql.Statement;
+import java.util.Arrays;
+import java.util.List;
 
 import static org.junit.Assert.*;
 
 public class StudentsDAOTest {
 
     private static final String URL = "jdbc:h2:mem:lesson21";
-    private static final String NAME = "Вася";
-    private static final String SURNAME = "Пупкин";
+    private static final List<Student> TEST_STUDENTS = Arrays.asList(
+            new Student("Вася", "Пупкин"),
+            new Student("Иван", "Иванов"),
+            new Student("Петр", "Петров"),
+            new Student("Семен", "Семенов")
+    );
 
     private DBService dbService;
     private StudentsDAO studentsDAO;
@@ -36,14 +42,32 @@ public class StudentsDAOTest {
 
     @Test
     public void saveStudent() throws Exception {
-        studentsDAO.saveStudent(new Student(NAME, SURNAME));
+        studentsDAO.saveStudent(TEST_STUDENTS.get(0));
 
         try (Statement stmt = dbService.getConnection().createStatement()) {
             ResultSet rs = stmt.executeQuery("select * from Students where name like 'Вася' and surname like 'Пупкин'");
             while (rs.next()) {
-                assertEquals(NAME, rs.getString("name"));
-                assertEquals(SURNAME, rs.getString("surname"));
+                assertEquals("Вася", rs.getString("name"));
+                assertEquals("Пупкин", rs.getString("surname"));
             }
         }
+    }
+
+    @Test
+    public void saveStudents() throws Exception {
+        studentsDAO.saveStudents(TEST_STUDENTS);
+
+        try (Statement stmt = dbService.getConnection().createStatement()) {
+            ResultSet rs = stmt.executeQuery("select * from Students");
+            int rows = 0;
+            while (rs.next()) rows++;
+            assertEquals(TEST_STUDENTS.size(), rows);
+        }
+    }
+
+    @Test
+    public void listStudents() throws Exception {
+
+
     }
 }

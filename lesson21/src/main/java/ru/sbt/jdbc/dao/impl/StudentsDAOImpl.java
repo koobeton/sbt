@@ -3,9 +3,13 @@ package ru.sbt.jdbc.dao.impl;
 import ru.sbt.jdbc.dao.StudentsDAO;
 import ru.sbt.jdbc.dataset.Student;
 import ru.sbt.jdbc.util.Executor;
+import ru.sbt.jdbc.util.ThrowableConsumer;
 
 import java.sql.Connection;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class StudentsDAOImpl implements StudentsDAO {
@@ -18,20 +22,42 @@ public class StudentsDAOImpl implements StudentsDAO {
 
     @Override
     public void saveStudent(Student student) {
+        saveStudents(Collections.singletonList(student));
+    }
+
+    @Override
+    public void saveStudents(List<Student> students) {
         String sql = "insert into Students(name, surname) values(?, ?)";
         try {
-            Executor.executeUpdate(connection, sql, pstmt -> {
-                pstmt.setString(1, student.getName());
-                pstmt.setString(2, student.getSurname());
+            Executor.executeBatchUpdate(connection, sql, pstmt -> {
+                for (Student student : students) {
+                    pstmt.setString(1, student.getName());
+                    pstmt.setString(2, student.getSurname());
+                    pstmt.addBatch();
+                }
             });
         } catch (SQLException e) {
-            throw new RuntimeException("Unable to save student: " + e.getMessage(), e);
+            throw new RuntimeException("Unable to save student(s): " + e.getMessage(), e);
         }
     }
 
     @Override
     public List<Student> listStudents() {
-        return null;
+        String sql = "select * from Students";
+        List<Student> students = new ArrayList<>();
+        try {
+            Executor.executeQuery(connection, sql, rs -> {
+                while (rs.next()) {
+                    long id = rs.getLong("id");
+                    String name = rs.getString("name");
+                    String surname = rs.getString("surname");
+                    students.add(new Student(id, name, surname));
+                }
+            });
+        } catch (SQLException e) {
+            throw new RuntimeException("Unable to get students list: " + e.getMessage(), e);
+        }
+        return students;
     }
 
     @Override
@@ -45,12 +71,12 @@ public class StudentsDAOImpl implements StudentsDAO {
     }
 
     @Override
-    public List<String> findStudentsBySurname(String surname) {
+    public List<Student> findStudentsBySurname(String surname) {
         return null;
     }
 
     @Override
-    public List<String> findStudentsByNameAndSurname(String name, String surname) {
+    public List<Student> findStudentsByNameAndSurname(String name, String surname) {
         return null;
     }
 

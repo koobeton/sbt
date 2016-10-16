@@ -8,15 +8,17 @@ public interface StudentsDAO {
 
     void saveStudent(Student student);
 
+    void saveStudents(List<Student> students);
+
     List<Student> listStudents();
 
     Student findStudentById(long id);
 
     List<Student> findStudentsByName(String name);
 
-    List<String> findStudentsBySurname(String surname);
+    List<Student> findStudentsBySurname(String surname);
 
-    List<String> findStudentsByNameAndSurname(String name, String surname);
+    List<Student> findStudentsByNameAndSurname(String name, String surname);
 
     void updateStudent(Student student);
 

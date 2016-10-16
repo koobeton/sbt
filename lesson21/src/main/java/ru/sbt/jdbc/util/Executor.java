@@ -1,15 +1,41 @@
 package ru.sbt.jdbc.util;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
+import java.sql.*;
 
 public class Executor {
 
-    public static void executeUpdate(Connection connection, String sql, ThrowableConsumer<PreparedStatement, SQLException> setter) throws SQLException {
+    public static void executeBatchUpdate(
+            Connection connection,
+            String sql,
+            ThrowableConsumer<PreparedStatement, SQLException> batchParameterAdder)
+            throws SQLException {
         try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
-            setter.accept(pstmt);
-            pstmt.executeUpdate();
+            batchParameterAdder.accept(pstmt);
+            pstmt.executeBatch();
+        }
+    }
+
+    public static void executeQuery(
+            Connection connection,
+            String sql,
+            ThrowableConsumer<ResultSet, SQLException> resultHandler)
+            throws SQLException {
+        try (Statement stmt = connection.createStatement()) {
+            ResultSet rs = stmt.executeQuery(sql);
+            resultHandler.accept(rs);
+        }
+    }
+
+    public static void executeQuery(
+            Connection connection,
+            String sql,
+            ThrowableConsumer<PreparedStatement, SQLException> parameterSetter,
+            ThrowableConsumer<ResultSet, SQLException> resultHandler)
+            throws SQLException {
+        try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
+            parameterSetter.accept(pstmt);
+            ResultSet rs = pstmt.executeQuery();
+            resultHandler.accept(rs);
         }
     }
 }

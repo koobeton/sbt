@@ -8,6 +8,8 @@ public interface LessonsDAO {
 
     void saveLesson(Lesson lesson);
 
+    void saveLessons(List<Lesson> lessons);
+
     List<Lesson> listLesson();
 
     Lesson findLessonById(long id);
