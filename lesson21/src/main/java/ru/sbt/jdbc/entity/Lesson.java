@@ -6,11 +6,17 @@ import java.util.Date;
 
 public class Lesson {
 
+    public static final long UNDEFINED_ID = -1;
+
     private static final DateFormat DATE_FORMAT = new SimpleDateFormat("dd.MM.yyyy");
 
     private final long id;
     private final String subject;
     private final long date;
+
+    public Lesson(String subject, long date) {
+        this(UNDEFINED_ID, subject, date);
+    }
 
     public Lesson(long id, String subject, long date) {
         this.id = id;

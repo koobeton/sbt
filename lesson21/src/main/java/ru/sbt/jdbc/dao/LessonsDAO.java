@@ -10,7 +10,7 @@ public interface LessonsDAO {
 
     void saveLessons(List<Lesson> lessons);
 
-    List<Lesson> listLesson();
+    List<Lesson> listLessons();
 
     Lesson findLessonById(long id);
 
