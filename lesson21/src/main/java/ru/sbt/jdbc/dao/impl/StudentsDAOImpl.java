@@ -1,7 +1,7 @@
 package ru.sbt.jdbc.dao.impl;
 
 import ru.sbt.jdbc.dao.StudentsDAO;
-import ru.sbt.jdbc.dataset.Student;
+import ru.sbt.jdbc.entity.Student;
 import ru.sbt.jdbc.util.ThrowableFunction;
 
 import java.sql.Connection;

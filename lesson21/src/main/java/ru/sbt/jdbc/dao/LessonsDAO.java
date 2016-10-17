@@ -1,6 +1,6 @@
 package ru.sbt.jdbc.dao;
 
-import ru.sbt.jdbc.dataset.Lesson;
+import ru.sbt.jdbc.entity.Lesson;
 
 import java.util.List;
 

@@ -1,4 +1,4 @@
-package ru.sbt.jdbc.dataset;
+package ru.sbt.jdbc.entity;
 
 public class StudentVisits {
 

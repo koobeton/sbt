@@ -8,7 +8,7 @@ import org.junit.rules.ExpectedException;
 import ru.sbt.jdbc.DBService;
 import ru.sbt.jdbc.DBServiceImpl;
 import ru.sbt.jdbc.dao.impl.StudentsDAOImpl;
-import ru.sbt.jdbc.dataset.Student;
+import ru.sbt.jdbc.entity.Student;
 
 import java.sql.ResultSet;
 import java.sql.Statement;
