@@ -8,6 +8,7 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.List;
 
+import static ru.sbt.jdbc.dao.handler.LessonsResultHandler.getLessonsResultHandler;
 import static ru.sbt.jdbc.dao.handler.StudentsResultHandler.getStudentsResultHandler;
 import static ru.sbt.jdbc.util.Executor.executeBatchUpdate;
 import static ru.sbt.jdbc.util.Executor.executeQuery;
@@ -52,7 +53,12 @@ public class StudentVisitsDAOImpl implements StudentVisitsDAO {
 
     @Override
     public List<Lesson> findLessonsByStudent(Student student) {
-        return null;
+        String sql = "select id, subject, date from Lessons, Student_visits where id = lesson_id and student_id = ?";
+        try {
+            return executeQuery(connection, sql, pstmt -> pstmt.setLong(1, student.getId()), getLessonsResultHandler());
+        } catch (SQLException e) {
+            throw new RuntimeException("Unable to find lessons by student: " + e.getMessage(), e);
+        }
     }
 
     private void executeUpdate(String sql, Student student, Lesson lesson) throws SQLException {
