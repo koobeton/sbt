@@ -48,6 +48,7 @@ public class StudentVisitsDAOImpl implements StudentVisitsDAO {
 
     @Override
     public List<Student> findStudentsByLesson(Lesson lesson) {
+        //String sql = "select id, name, surname from Student, Student_visits where id = student_id and lesson_id = ?";
         return null;
     }
 
