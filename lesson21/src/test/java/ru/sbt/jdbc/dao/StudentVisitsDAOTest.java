@@ -173,7 +173,7 @@ public class StudentVisitsDAOTest {
         studentVisitsDAO.registerStudentAtLesson(ivan, javascript);
         studentVisitsDAO.registerStudentAtLesson(peter, javascript);
 
-        studentsDAO.deleteStudent(1);
+        studentsDAO.deleteStudent(vasya.getId());
 
         try (Statement stmt = dbService.getConnection().createStatement()) {
             ResultSet rs = stmt.executeQuery("select * from Student_visits");
@@ -184,5 +184,35 @@ public class StudentVisitsDAOTest {
 
         List<Lesson> deletedVasya = studentVisitsDAO.findLessonsByStudent(vasya);
         assertTrue(deletedVasya.isEmpty());
+    }
+
+    @Test
+    public void testLessonsCascadeDelete() throws Exception {
+        Student vasya = studentsDAO.findStudentById(1);
+        Student ivan = studentsDAO.findStudentById(2);
+        Student peter = studentsDAO.findStudentById(3);
+        Lesson java = lessonsDAO.findLessonById(1);
+        Lesson cpp = lessonsDAO.findLessonById(2);
+        Lesson javascript = lessonsDAO.findLessonById(3);
+
+        studentVisitsDAO.registerStudentAtLesson(vasya, java);
+        studentVisitsDAO.registerStudentAtLesson(vasya, cpp);
+        studentVisitsDAO.registerStudentAtLesson(vasya, javascript);
+        studentVisitsDAO.registerStudentAtLesson(ivan, java);
+        studentVisitsDAO.registerStudentAtLesson(ivan, cpp);
+        studentVisitsDAO.registerStudentAtLesson(ivan, javascript);
+        studentVisitsDAO.registerStudentAtLesson(peter, javascript);
+
+        lessonsDAO.deleteLesson(cpp.getId());
+
+        try (Statement stmt = dbService.getConnection().createStatement()) {
+            ResultSet rs = stmt.executeQuery("select * from Student_visits");
+            int rows = 0;
+            while (rs.next()) rows++;
+            assertEquals(5, rows);
+        }
+
+        List<Student> deletedCpp = studentVisitsDAO.findStudentsByLesson(cpp);
+        assertTrue(deletedCpp.isEmpty());
     }
 }
