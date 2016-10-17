@@ -114,7 +114,24 @@ public class StudentVisitsDAOTest {
 
     @Test
     public void findStudentsByLesson() throws Exception {
+        Student vasya = studentsDAO.findStudentById(1);
+        Student ivan = studentsDAO.findStudentById(2);
+        Student peter = studentsDAO.findStudentById(3);
+        Lesson java = lessonsDAO.findLessonById(1);
+        Lesson cpp = lessonsDAO.findLessonById(2);
+        Lesson javascript = lessonsDAO.findLessonById(3);
 
+        studentVisitsDAO.registerStudentAtLesson(vasya, java);
+        studentVisitsDAO.registerStudentAtLesson(vasya, cpp);
+        studentVisitsDAO.registerStudentAtLesson(vasya, javascript);
+        studentVisitsDAO.registerStudentAtLesson(ivan, java);
+        studentVisitsDAO.registerStudentAtLesson(ivan, cpp);
+        studentVisitsDAO.registerStudentAtLesson(ivan, javascript);
+        studentVisitsDAO.registerStudentAtLesson(peter, javascript);
+
+        List<Student> studentsAtJava = studentVisitsDAO.findStudentsByLesson(java);
+
+        assertEquals(2, studentsAtJava.size());
     }
 
     @Test

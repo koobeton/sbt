@@ -10,7 +10,7 @@ import java.util.List;
 
 public class LessonsResultHandler {
 
-    public static ThrowableFunction<ResultSet, List<Lesson>, SQLException> getResultHandler() {
+    public static ThrowableFunction<ResultSet, List<Lesson>, SQLException> getLessonsResultHandler() {
         return rs -> {
             List<Lesson> lessons = new ArrayList<>();
             while (rs.next()) {

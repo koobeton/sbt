@@ -8,7 +8,7 @@ import java.sql.SQLException;
 import java.util.Collections;
 import java.util.List;
 
-import static ru.sbt.jdbc.dao.handler.LessonsResultHandler.getResultHandler;
+import static ru.sbt.jdbc.dao.handler.LessonsResultHandler.getLessonsResultHandler;
 import static ru.sbt.jdbc.util.Executor.executeBatchUpdate;
 import static ru.sbt.jdbc.util.Executor.executeQuery;
 import static ru.sbt.jdbc.util.Selector.selectOne;
@@ -46,7 +46,7 @@ public class LessonDAOImpl implements LessonsDAO {
     public List<Lesson> listLessons() {
         String sql = "select * from Lessons";
         try {
-            return executeQuery(connection, sql, getResultHandler());
+            return executeQuery(connection, sql, getLessonsResultHandler());
         } catch (SQLException e) {
             throw new RuntimeException("Unable to get lessons list: " + e.getMessage(), e);
         }
@@ -56,7 +56,7 @@ public class LessonDAOImpl implements LessonsDAO {
     public Lesson findLessonById(long id) {
         String sql = "select * from Lessons where id = ?";
         try {
-            return selectOne(executeQuery(connection, sql, pstmt -> pstmt.setLong(1, id), getResultHandler()));
+            return selectOne(executeQuery(connection, sql, pstmt -> pstmt.setLong(1, id), getLessonsResultHandler()));
         } catch (SQLException e) {
             throw new RuntimeException("Unable to find lesson by id: " + e.getMessage(), e);
         }
@@ -66,7 +66,7 @@ public class LessonDAOImpl implements LessonsDAO {
     public List<Lesson> findLessonsBySubject(String subject) {
         String sql = "select * from Lessons where subject = ?";
         try {
-            return executeQuery(connection, sql, pstmt -> pstmt.setString(1, subject), getResultHandler());
+            return executeQuery(connection, sql, pstmt -> pstmt.setString(1, subject), getLessonsResultHandler());
         } catch (SQLException e) {
             throw new RuntimeException("Unable to find lessons by subject: " + e.getMessage(), e);
         }
@@ -76,7 +76,7 @@ public class LessonDAOImpl implements LessonsDAO {
     public List<Lesson> findLessonsByDate(long date) {
         String sql = "select * from Lessons where date = ?";
         try {
-            return executeQuery(connection, sql, pstmt -> pstmt.setLong(1, date), getResultHandler());
+            return executeQuery(connection, sql, pstmt -> pstmt.setLong(1, date), getLessonsResultHandler());
         } catch (SQLException e) {
             throw new RuntimeException("Unable to find lessons by date: " + e.getMessage(), e);
         }
@@ -89,7 +89,7 @@ public class LessonDAOImpl implements LessonsDAO {
             return executeQuery(connection, sql, pstmt -> {
                 pstmt.setString(1, subject);
                 pstmt.setLong(2, date);
-            }, getResultHandler());
+            }, getLessonsResultHandler());
         } catch (SQLException e) {
             throw new RuntimeException("Unable to find lessons by subject and date: " + e.getMessage(), e);
         }

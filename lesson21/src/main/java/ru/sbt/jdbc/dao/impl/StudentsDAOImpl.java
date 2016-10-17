@@ -8,7 +8,7 @@ import java.sql.SQLException;
 import java.util.Collections;
 import java.util.List;
 
-import static ru.sbt.jdbc.dao.handler.StudentsResultHandler.getResultHandler;
+import static ru.sbt.jdbc.dao.handler.StudentsResultHandler.getStudentsResultHandler;
 import static ru.sbt.jdbc.util.Executor.executeBatchUpdate;
 import static ru.sbt.jdbc.util.Executor.executeQuery;
 import static ru.sbt.jdbc.util.Selector.selectOne;
@@ -46,7 +46,7 @@ public class StudentsDAOImpl implements StudentsDAO {
     public List<Student> listStudents() {
         String sql = "select * from Students";
         try {
-            return executeQuery(connection, sql, getResultHandler());
+            return executeQuery(connection, sql, getStudentsResultHandler());
         } catch (SQLException e) {
             throw new RuntimeException("Unable to get students list: " + e.getMessage(), e);
         }
@@ -56,7 +56,7 @@ public class StudentsDAOImpl implements StudentsDAO {
     public Student findStudentById(long id) {
         String sql = "select * from Students where id = ?";
         try {
-            return selectOne(executeQuery(connection, sql, pstmt -> pstmt.setLong(1, id), getResultHandler()));
+            return selectOne(executeQuery(connection, sql, pstmt -> pstmt.setLong(1, id), getStudentsResultHandler()));
         } catch (SQLException e) {
             throw new RuntimeException("Unable to find student by id: " + e.getMessage(), e);
         }
@@ -66,7 +66,7 @@ public class StudentsDAOImpl implements StudentsDAO {
     public List<Student> findStudentsByName(String name) {
         String sql = "select * from Students where name = ?";
         try {
-            return executeQuery(connection, sql, pstmt -> pstmt.setString(1, name), getResultHandler());
+            return executeQuery(connection, sql, pstmt -> pstmt.setString(1, name), getStudentsResultHandler());
         } catch (SQLException e) {
             throw new RuntimeException("Unable to find students by name: " + e.getMessage(), e);
         }
@@ -76,7 +76,7 @@ public class StudentsDAOImpl implements StudentsDAO {
     public List<Student> findStudentsBySurname(String surname) {
         String sql = "select * from Students where surname = ?";
         try {
-            return executeQuery(connection, sql, pstmt -> pstmt.setString(1, surname), getResultHandler());
+            return executeQuery(connection, sql, pstmt -> pstmt.setString(1, surname), getStudentsResultHandler());
         } catch (SQLException e) {
             throw new RuntimeException("Unable to find students by surname: " + e.getMessage(), e);
         }
@@ -89,7 +89,7 @@ public class StudentsDAOImpl implements StudentsDAO {
             return executeQuery(connection, sql, pstmt -> {
                 pstmt.setString(1, name);
                 pstmt.setString(2, surname);
-            }, getResultHandler());
+            }, getStudentsResultHandler());
         } catch (SQLException e) {
             throw new RuntimeException("Unable to find students by name and surname: " + e.getMessage(), e);
         }
