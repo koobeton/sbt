@@ -155,4 +155,34 @@ public class StudentVisitsDAOTest {
 
         assertEquals(3, vasyaVisited.size());
     }
+
+    @Test
+    public void testStudentsCascadeDelete() throws Exception {
+        Student vasya = studentsDAO.findStudentById(1);
+        Student ivan = studentsDAO.findStudentById(2);
+        Student peter = studentsDAO.findStudentById(3);
+        Lesson java = lessonsDAO.findLessonById(1);
+        Lesson cpp = lessonsDAO.findLessonById(2);
+        Lesson javascript = lessonsDAO.findLessonById(3);
+
+        studentVisitsDAO.registerStudentAtLesson(vasya, java);
+        studentVisitsDAO.registerStudentAtLesson(vasya, cpp);
+        studentVisitsDAO.registerStudentAtLesson(vasya, javascript);
+        studentVisitsDAO.registerStudentAtLesson(ivan, java);
+        studentVisitsDAO.registerStudentAtLesson(ivan, cpp);
+        studentVisitsDAO.registerStudentAtLesson(ivan, javascript);
+        studentVisitsDAO.registerStudentAtLesson(peter, javascript);
+
+        studentsDAO.deleteStudent(1);
+
+        try (Statement stmt = dbService.getConnection().createStatement()) {
+            ResultSet rs = stmt.executeQuery("select * from Student_visits");
+            int rows = 0;
+            while (rs.next()) rows++;
+            assertEquals(4, rows);
+        }
+
+        List<Lesson> deletedVasya = studentVisitsDAO.findLessonsByStudent(vasya);
+        assertTrue(deletedVasya.isEmpty());
+    }
 }
