@@ -1,0 +1,41 @@
+package ru.sbt.spring.domain;
+
+import ru.sbt.spring.proxy.annotation.Cache;
+import ru.sbt.spring.proxy.annotation.Ignore;
+
+import java.util.Date;
+import java.util.List;
+
+import static ru.sbt.spring.proxy.annotation.Cache.Type.*;
+
+public interface Service {
+
+    List<String> uncached(String item, double value, Date date);
+
+    @Cache
+    List<String> cachedDefault(String item, double value, Date date);
+
+    @Cache
+    List<String> cachedDefault();
+
+    @Cache(maxListSize = 100_000)
+    List<String> limitedListSize(String item, double value, Date date);
+
+    @Cache(maxListSize = 10_000_000)
+    List<String> bigLimitListSize(String item, double value, Date date);
+
+    @Cache
+    List<String> ignoreArgs(@Ignore String item, double value, @Ignore Date date);
+
+    @Cache(cacheType = IN_MEMORY)
+    List<String> inMemory(String item, double value, Date date);
+
+    @Cache(cacheType = FILE)
+    List<String> defaultFile(String item, double value, @Ignore Date date);
+
+    @Cache(cacheType = FILE, fileNamePrefix = "SBT")
+    List<String> explicitFileName(String item, double value, @Ignore Date date);
+
+    @Cache(cacheType = FILE, zip = true)
+    List<String> zipFile(String item, double value, @Ignore Date date);
+}
